@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Sparkles, Terminal, ChevronLeft, File, Save, Code } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from 'react';
+import { Monitor, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UltimateBeautifierSidebar } from './UltimateBeautifierSidebar';
 import { EditorArea } from '../Editor/EditorArea';
 import { PreviewArea } from '../Preview/PreviewArea';
-import { WelcomeOverlay } from '../Welcome/WelcomeOverlay';
-import { DragDropArea } from '../DragDrop/DragDropArea';
+// @ts-ignore
+import WelcomeOverlay from '../Welcome/WelcomeOverlay';
+// @ts-ignore
+import DragDropArea from '../DragDrop/DragDropArea';
 
 export function UltimateBeautifierLayout() {
   const [currentTheme, setCurrentTheme] = useState('default');
@@ -15,12 +17,10 @@ export function UltimateBeautifierLayout() {
   const [isDragActive, setIsDragActive] = useState(false);
   const [fileCount, setFileCount] = useState(0);
 
-  // Apply theme to body
   useEffect(() => {
-    document.body.className = currentTheme === 'default' ? '' : currentTheme;
+    document.body.className = currentTheme;
   }, [currentTheme]);
 
-  // Handle drag and drop globally
   useEffect(() => {
     const handleDragOver = (e: DragEvent) => {
       e.preventDefault();
@@ -28,6 +28,7 @@ export function UltimateBeautifierLayout() {
     };
 
     const handleDragLeave = (e: DragEvent) => {
+      e.preventDefault();
       if (!e.relatedTarget) {
         setIsDragActive(false);
       }
@@ -36,7 +37,6 @@ export function UltimateBeautifierLayout() {
     const handleDrop = (e: DragEvent) => {
       e.preventDefault();
       setIsDragActive(false);
-      setShowWelcome(false);
     };
 
     document.addEventListener('dragover', handleDragOver);
@@ -50,31 +50,37 @@ export function UltimateBeautifierLayout() {
     };
   }, []);
 
+  const handleToggleCollapse = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
+
+  const handleFileCountChange = (count: number) => {
+    setFileCount(count);
+  };
+
   return (
-    <div className={`app-grid ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+    <div className="app-container">
       {/* Header */}
-      <header className="bg-card border-b border-border flex items-center px-5 gap-5" style={{ gridArea: 'header' }}>
-        <div className="flex items-center gap-3 text-primary font-bold text-xl">
-          <Sparkles className="w-6 h-6" />
+      <header className="header">
+        <div className="logo">
+          <i className="fas fa-magic"></i>
           <span>Ultimate Beautifier</span>
         </div>
-        
-        <div className="flex items-center gap-3 ml-auto">
+        <div className="header-controls">
           <Select value={currentTheme} onValueChange={setCurrentTheme}>
-            <SelectTrigger className="w-40 bg-card border-primary text-foreground">
-              <SelectValue placeholder="Thème" />
+            <SelectTrigger className="theme-selector">
+              <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-card border-border">
+            <SelectContent>
               <SelectItem value="default">Default</SelectItem>
               <SelectItem value="dracula">Dracula</SelectItem>
               <SelectItem value="solarized">Solarized</SelectItem>
               <SelectItem value="tokyo-night">Tokyo Night</SelectItem>
             </SelectContent>
           </Select>
-          
-          <Button variant="outline" className="flex items-center gap-2">
-            <Terminal className="w-4 h-4" />
-            <span className="hidden sm:inline">Commander (Ctrl+K)</span>
+          <Button variant="outline" className="command-palette">
+            <Monitor className="w-4 h-4 mr-2" />
+            Command (Ctrl+K)
           </Button>
         </div>
       </header>
@@ -82,40 +88,34 @@ export function UltimateBeautifierLayout() {
       {/* Sidebar */}
       <UltimateBeautifierSidebar 
         collapsed={sidebarCollapsed}
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
-        onFileCountChange={setFileCount}
+        onToggleCollapse={handleToggleCollapse}
+        onFileCountChange={handleFileCountChange}
       />
 
       {/* Main Content */}
-      <main className="overflow-hidden" style={{ gridArea: 'main' }}>
-        <div className="grid grid-cols-2 grid-rows-[1fr_250px] gap-4 p-5 h-full">
-          <EditorArea />
-          <PreviewArea />
-        </div>
+      <main className="main-content">
+        <EditorArea />
+        <PreviewArea />
       </main>
 
       {/* Footer */}
-      <footer className="bg-card border-t border-border flex items-center px-5 text-sm text-muted-foreground" style={{ gridArea: 'footer' }}>
-        <div className="flex items-center gap-2 mr-5">
-          <Code className="w-4 h-4" />
+      <footer className="footer">
+        <div className="status-item">
+          <i className="fas fa-code"></i>
           <span id="languageStatus">JavaScript</span>
         </div>
-        <div className="flex items-center gap-2 mr-5">
-          <Save className="w-4 h-4" />
-          <span>Sauvegarde automatique activée</span>
+        <div className="status-item">
+          <i className="fas fa-save"></i>
+          <span>Auto-save enabled</span>
         </div>
-        <div className="flex items-center gap-2">
-          <File className="w-4 h-4" />
-          <span>{fileCount} fichier{fileCount > 1 ? 's' : ''} ouvert{fileCount > 1 ? 's' : ''}</span>
+        <div className="status-item">
+          <i className="fas fa-file"></i>
+          <span>{fileCount} file{fileCount !== 1 ? 's' : ''} open</span>
         </div>
       </footer>
 
-      {/* Welcome Overlay */}
-      {showWelcome && (
-        <WelcomeOverlay onClose={() => setShowWelcome(false)} />
-      )}
-
-      {/* Drag Drop Area */}
+      {/* Overlays */}
+      {showWelcome && <WelcomeOverlay />}
       <DragDropArea active={isDragActive} />
     </div>
   );
