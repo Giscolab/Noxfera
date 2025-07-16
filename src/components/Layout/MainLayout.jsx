@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Toaster } from "@/components/ui/toaster";
 import useEditorStore from '@/stores/useEditorStore';
 import useFileStore from '@/stores/useFileStore';
 import Header from './Header';
@@ -74,8 +73,6 @@ const MainLayout = () => {
       {/* Overlays */}
       {showWelcome && <WelcomeOverlay />}
       <DragDropArea />
-      
-      <Toaster />
     </div>
   );
 };

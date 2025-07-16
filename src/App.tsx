@@ -1,8 +1,9 @@
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import MainLayout from "./components/Layout/MainLayout";
+import SimpleLayout from "./components/Layout/SimpleLayout";
 
 const queryClient = new QueryClient();
 
@@ -11,7 +12,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <MainLayout />
+      <SimpleLayout />
     </TooltipProvider>
   </QueryClientProvider>
 );
