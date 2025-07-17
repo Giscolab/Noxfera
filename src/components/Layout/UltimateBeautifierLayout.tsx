@@ -32,7 +32,7 @@ export function UltimateBeautifierLayout() {
   const [isDragActive, setIsDragActive] = useState(false);
 
   useEffect(() => {
-    document.documentElement.className = currentTheme;
+    document.documentElement.className = currentTheme || 'lovable-neumorph';
   }, [currentTheme]);
 
   useEffect(() => {
@@ -90,37 +90,46 @@ export function UltimateBeautifierLayout() {
     {/* Header */}
     <header className="header">
       <div className="logo" aria-label="Logo Ultimate Beautifier">
-        <i className="fas fa-magic"></i>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" fill="currentColor" opacity="0.2"/>
+          <path d="M12 2L22 7V17L12 22L2 17V7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M2 7L12 12L22 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M12 22V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
         <span>Ultimate Beautifier</span>
+        <div className="text-xs text-muted-foreground font-normal">
+          by <span className="text-primary font-semibold">lovable.dev</span>
+        </div>
       </div>
-      <div className="header-controls">
+      <div className="header-controls flex items-center gap-4">
         <Button 
           variant="secondary" 
           type="button"
           onClick={() => document.getElementById('fileInput')?.click()}
           aria-label="Importer un fichier"
+          className="neumorph-button"
         >
           Importer un fichier
         </Button>
         <input
-  id="fileInput"
-  type="file"
-  className="sr-only"
-  aria-hidden="true"
-  tabIndex={-1}
-  onChange={handleFileInput}
-/>
+          id="fileInput"
+          type="file"
+          className="sr-only"
+          aria-hidden="true"
+          tabIndex={-1}
+          onChange={handleFileInput}
+        />
 
-
-        <Select value={currentTheme} onValueChange={setCurrentTheme}>
+        <Select value={currentTheme || 'lovable-neumorph'} onValueChange={setCurrentTheme}>
           <SelectTrigger
-            className="theme-selector"
+            className="theme-selector w-40 neumorph-button"
             aria-label="Changer de thème"
             aria-haspopup="listbox"
           >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="lovable-neumorph">Lovable Light</SelectItem>
             <SelectItem value="default">Default</SelectItem>
             <SelectItem value="dracula">Dracula</SelectItem>
             <SelectItem value="solarized">Solarized</SelectItem>
@@ -130,7 +139,7 @@ export function UltimateBeautifierLayout() {
 
         <Button 
           variant="outline" 
-          className="command-palette"
+          className="command-palette neumorph-button"
           aria-label="Ouvrir la palette de commandes"
         >
           <Monitor className="w-4 h-4 mr-2" />

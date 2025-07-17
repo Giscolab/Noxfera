@@ -8,47 +8,51 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Ultimate Beautifier Theme System - Default Theme */
-    --primary: 247 84% 67%;
-    --primary-dark: 239 84% 67%;
-    --secondary: 350 89% 60%;
-    --background: 215 28% 17%;
-    --surface: 215 25% 27%;
-    --text-primary: 210 40% 98%;
-    --text-secondary: 215 16% 65%;
+    /* Lovable.dev Neumorphic Theme - Light Mode */
+    --primary: 262 83% 58%;
+    --primary-dark: 262 83% 50%;
+    --secondary: 220 14% 96%;
+    --background: 220 14% 96%;
+    --surface: 0 0% 100%;
+    --text-primary: 224 71% 4%;
+    --text-secondary: 220 9% 46%;
     --success: 142 76% 36%;
     --warning: 45 93% 47%;
     --error: 0 84% 60%;
-    --border: 215 20% 35%;
-    --highlight: 247 84% 67% / 0.2;
+    --border: 220 13% 91%;
+    --highlight: 262 83% 58% / 0.1;
 
     /* Map to standard variables */
-    --foreground: 210 40% 98%;
-    --card: 215 25% 27%;
-    --card-foreground: 210 40% 98%;
-    --popover: 215 25% 27%;
-    --popover-foreground: 210 40% 98%;
-    --primary-foreground: 215 28% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 215 20% 35%;
-    --muted-foreground: 215 16% 65%;
-    --accent: 215 20% 35%;
-    --accent-foreground: 210 40% 98%;
+    --foreground: 224 71% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary-foreground: 210 20% 98%;
+    --secondary-foreground: 220 9% 46%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 9% 46%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --input: 215 20% 35%;
-    --ring: 247 84% 67%;
-    --radius: 0.5rem;
+    --destructive-foreground: 210 20% 98%;
+    --input: 220 13% 91%;
+    --ring: 262 83% 58%;
+    --radius: 0.75rem;
 
     /* Sidebar variables */
-    --sidebar-background: 215 25% 27%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 247 84% 67%;
-    --sidebar-primary-foreground: 215 28% 17%;
-    --sidebar-accent: 215 20% 35%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 215 20% 35%;
-    --sidebar-ring: 247 84% 67%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 224 71% 4%;
+    --sidebar-primary: 262 83% 58%;
+    --sidebar-primary-foreground: 210 20% 98%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 220 9% 46%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 262 83% 58%;
+
+    /* Neumorphic shadow variables */
+    --neumorph-shadow-light: 0 0% 100%;
+    --neumorph-shadow-dark: 220 13% 91%;
   }
 
   /* Dracula Theme */
@@ -98,7 +102,8 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
     overflow: hidden;
   }
 
@@ -187,36 +192,86 @@ All colors MUST be HSL.
   /* Layout Grid */
   .app-grid {
     display: grid;
-    grid-template-columns: 250px 1fr;
-    grid-template-rows: 60px 1fr 40px;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: 70px 1fr 50px;
     grid-template-areas:
       "header header"
       "sidebar main"
       "footer footer";
     height: 100vh;
+    gap: 16px;
+    padding: 16px;
   }
 
   .header {
     grid-area: header;
-    @apply bg-background border-b border-border flex items-center justify-between px-4;
+    @apply bg-card flex items-center justify-between px-8 rounded-xl;
+    box-shadow: 
+      8px 8px 16px hsl(var(--neumorph-shadow-dark)), 
+      -8px -8px 16px hsl(var(--neumorph-shadow-light));
+    border: 1px solid hsl(var(--border));
   }
 
   .logo {
-    @apply text-primary font-bold text-lg flex items-center gap-2;
+    @apply text-primary font-bold text-xl flex items-center gap-3;
+    font-feature-settings: 'ss01' on;
   }
 
   .main-content {
     grid-area: main;
     @apply bg-background overflow-hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 16px;
   }
 
   .footer {
     grid-area: footer;
-    @apply bg-background border-t border-border flex items-center justify-between px-4 text-sm text-muted-foreground;
+    @apply bg-card flex items-center justify-between px-8 text-sm text-muted-foreground rounded-xl;
+    box-shadow: 
+      4px 4px 8px hsl(var(--neumorph-shadow-dark)), 
+      -4px -4px 8px hsl(var(--neumorph-shadow-light));
+    border: 1px solid hsl(var(--border));
   }
 
   .app-grid.sidebar-collapsed {
-    grid-template-columns: 60px 1fr;
+    grid-template-columns: 80px 1fr;
+  }
+
+  /* Neumorphic button classes */
+  .neumorph-button {
+    @apply bg-card border border-border rounded-xl transition-all duration-200;
+    box-shadow: 
+      6px 6px 12px hsl(var(--neumorph-shadow-dark)), 
+      -6px -6px 12px hsl(var(--neumorph-shadow-light));
+  }
+
+  .neumorph-button:hover {
+    box-shadow: 
+      4px 4px 8px hsl(var(--neumorph-shadow-dark)), 
+      -4px -4px 8px hsl(var(--neumorph-shadow-light));
+  }
+
+  .neumorph-button:active {
+    box-shadow: 
+      inset 2px 2px 4px hsl(var(--neumorph-shadow-dark)), 
+      inset -2px -2px 4px hsl(var(--neumorph-shadow-light));
+  }
+
+  /* Neumorphic panel classes */
+  .neumorph-panel {
+    @apply bg-card border border-border rounded-xl;
+    box-shadow: 
+      8px 8px 16px hsl(var(--neumorph-shadow-dark)), 
+      -8px -8px 16px hsl(var(--neumorph-shadow-light));
+  }
+
+  .neumorph-inset {
+    @apply bg-card border border-border rounded-xl;
+    box-shadow: 
+      inset 4px 4px 8px hsl(var(--neumorph-shadow-dark)), 
+      inset -4px -4px 8px hsl(var(--neumorph-shadow-light));
   }
 
   @media (max-width: 900px) {

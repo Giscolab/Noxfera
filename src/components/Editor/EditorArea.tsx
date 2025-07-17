@@ -52,22 +52,22 @@ export function EditorArea() {
   return (
     <>
       {/* File Tabs */}
-      <div className="col-span-2 flex items-center gap-1 bg-card rounded-t-lg border-b border-border px-3 py-2 min-h-[40px] overflow-x-auto custom-scrollbar">
+      <div className="col-span-2 flex items-center gap-2 bg-card rounded-t-xl border-b border-border px-4 py-3 min-h-[48px] overflow-x-auto custom-scrollbar neumorph-panel">
         {files.map((file) => (
           <Button
             key={file.id}
             variant={file.id === activeFileId ? "default" : "ghost"}
             size="sm"
-            className={`flex items-center gap-2 rounded-t-lg rounded-b-none h-8 ${
-              file.id === activeFileId ? 'bg-background border-b-2 border-primary' : ''
+            className={`flex items-center gap-2 rounded-xl h-9 px-3 transition-all duration-200 ${
+              file.id === activeFileId ? 'neumorph-inset text-primary-foreground' : 'neumorph-button'
             }`}
             onClick={() => setActiveFile(file.id)}
           >
             <FileCode className="w-3 h-3" />
-            <span className="text-xs">{file.name}</span>
+            <span className="text-xs font-medium">{file.name}</span>
             {file.id === activeFileId && (
               <span
-                className="ml-1 text-destructive hover:text-destructive/80 cursor-pointer"
+                className="ml-1 text-destructive hover:text-destructive/80 cursor-pointer text-sm"
                 onClick={(e) => {
                   e.stopPropagation();
                   removeFile(file.id);
@@ -81,15 +81,16 @@ export function EditorArea() {
       </div>
 
       {/* Original Editor */}
-      <Card className="rounded-tl-none">
-        <CardHeader className="p-3 bg-muted/50 flex flex-row items-center justify-between">
-          <h3 className="text-sm font-medium">Code original</h3>
+      <Card className="rounded-tl-none neumorph-panel">
+        <CardHeader className="p-4 bg-muted/30 flex flex-row items-center justify-between rounded-t-xl">
+          <h3 className="text-sm font-semibold text-foreground">Code original</h3>
           <div className="flex items-center gap-2">
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={() => detectLanguage(originalCode)}
               title="Détecter le langage"
+              className="neumorph-button h-8 w-8 p-0"
             >
               <Languages className="w-4 h-4" />
             </Button>
@@ -98,6 +99,7 @@ export function EditorArea() {
               size="sm" 
               onClick={formatCode}
               title="Formater le code"
+              className="neumorph-button h-8 w-8 p-0"
             >
               <Play className="w-4 h-4" />
             </Button>
@@ -106,33 +108,35 @@ export function EditorArea() {
               size="sm" 
               onClick={() => handleCopy(originalCode)}
               title="Copier"
+              className="neumorph-button h-8 w-8 p-0"
             >
               <Copy className="w-4 h-4" />
             </Button>
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="h-[400px] relative">
+          <div className="h-[400px] relative neumorph-inset rounded-b-xl">
             <MonacoEditor
               value={originalCode}
               onChange={setOriginalCode}
               language={currentLanguage}
-              theme="vs-dark"
+              theme="vs-light"
             />
           </div>
         </CardContent>
       </Card>
 
       {/* Formatted Editor */}
-      <Card className="rounded-tr-none">
-        <CardHeader className="p-3 bg-muted/50 flex flex-row items-center justify-between">
-          <h3 className="text-sm font-medium">Code formaté</h3>
+      <Card className="rounded-tr-none neumorph-panel">
+        <CardHeader className="p-4 bg-muted/30 flex flex-row items-center justify-between rounded-t-xl">
+          <h3 className="text-sm font-semibold text-foreground">Code formaté</h3>
           <div className="flex items-center gap-2">
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={() => handleCopy(formattedCode)}
               title="Copier"
+              className="neumorph-button h-8 w-8 p-0"
             >
               <Copy className="w-4 h-4" />
             </Button>
@@ -141,17 +145,18 @@ export function EditorArea() {
               size="sm" 
               onClick={() => handleDownload(formattedCode, `formatted_${activeFile?.name || 'code'}`)}
               title="Télécharger"
+              className="neumorph-button h-8 w-8 p-0"
             >
               <Download className="w-4 h-4" />
             </Button>
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="h-[400px] relative">
+          <div className="h-[400px] relative neumorph-inset rounded-b-xl">
             <MonacoEditor
               value={formattedCode}
               language={currentLanguage}
-              theme="vs-dark"
+              theme="vs-light"
               readOnly
             />
           </div>
