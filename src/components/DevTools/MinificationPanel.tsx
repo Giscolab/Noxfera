@@ -6,19 +6,27 @@ import { MonacoEditor } from '../Editor/MonacoEditor';
 import { Minimize2, Download, Copy, FileText } from 'lucide-react';
 import useDevToolsStore from '@/stores/useDevToolsStore';
 
-// Imports dynamiques pour éviter les erreurs SSR
-let terser: any = null;
-let htmlMinifier: any = null;
+// Minification CSS simple (intégrée)
+const minifyCSS = (css: string): string => {
+  return css
+    .replace(/\/\*[\s\S]*?\*\//g, '') // Supprimer commentaires
+    .replace(/\s+/g, ' ') // Remplacer multiples espaces
+    .replace(/;\s*}/g, '}') // Supprimer point-virgule avant }
+    .replace(/\s*{\s*/g, '{') // Supprimer espaces autour de {
+    .replace(/}\s*/g, '}') // Supprimer espaces après }
+    .replace(/:\s*/g, ':') // Supprimer espaces après :
+    .replace(/;\s*/g, ';') // Supprimer espaces après ;
+    .trim();
+};
 
-if (typeof window !== 'undefined') {
-  import('terser').then(module => {
-    terser = module;
-  });
-  
-  import('html-minifier-terser').then(module => {
-    htmlMinifier = module;
-  });
-}
+// Minification HTML simple
+const minifyHTML = (html: string): string => {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, '') // Supprimer commentaires HTML
+    .replace(/>\s+</g, '><') // Supprimer espaces entre balises
+    .replace(/\s+/g, ' ') // Remplacer multiples espaces
+    .trim();
+};
 
 export function MinificationPanel() {
   const { 
@@ -32,75 +40,22 @@ export function MinificationPanel() {
   const [isMinifying, setIsMinifying] = useState(false);
   const [activeTab, setActiveTab] = useState('html');
 
-  const minifyCSS = (css: string): string => {
-    // Minification CSS simple (enlever commentaires, espaces, nouvelles lignes)
-    return css
-      .replace(/\/\*[\s\S]*?\*\//g, '') // Supprimer commentaires
-      .replace(/\s+/g, ' ') // Remplacer multiples espaces par un seul
-      .replace(/;\s*}/g, '}') // Supprimer point-virgule avant accolade fermante
-      .replace(/\s*{\s*/g, '{') // Supprimer espaces autour des accolades ouvrantes
-      .replace(/}\s*/g, '}') // Supprimer espaces après accolades fermantes
-      .replace(/:\s*/g, ':') // Supprimer espaces après deux-points
-      .replace(/;\s*/g, ';') // Supprimer espaces après point-virgule
-      .trim();
-  };
-
   const handleMinifyAll = async () => {
     setIsMinifying(true);
     
     try {
-      let minifiedHTML = htmlCode;
-      let minifiedCSS = cssCode;
+      let minifiedHTML = htmlCode.trim() ? minifyHTML(htmlCode) : htmlCode;
+      let minifiedCSS = cssCode.trim() ? minifyCSS(cssCode) : cssCode;
       let minifiedJS = jsCode;
 
-      // Minifier HTML
-      if (htmlMinifier && htmlCode.trim()) {
-        try {
-          minifiedHTML = htmlMinifier.minify(htmlCode, {
-            collapseWhitespace: true,
-            removeComments: true,
-            removeRedundantAttributes: true,
-            removeScriptTypeAttributes: true,
-            removeStyleLinkTypeAttributes: true,
-            useShortDoctype: true,
-            minifyCSS: true,
-            minifyJS: true
-          });
-        } catch (error) {
-          console.error('Erreur minification HTML:', error);
-        }
-      }
-
-      // Minifier CSS
-      if (cssCode.trim()) {
-        minifiedCSS = minifyCSS(cssCode);
-      }
-
-      // Minifier JavaScript
-      if (terser && jsCode.trim()) {
-        try {
-          const result = await terser.minify(jsCode, {
-            compress: {
-              dead_code: true,
-              drop_console: false,
-              drop_debugger: true,
-              keep_fnames: false,
-              keep_fargs: false
-            },
-            mangle: {
-              keep_fnames: false
-            },
-            format: {
-              comments: false
-            }
-          });
-          
-          if (result.code) {
-            minifiedJS = result.code;
-          }
-        } catch (error) {
-          console.error('Erreur minification JS:', error);
-        }
+      // Minification JS basique (sans terser pour éviter les erreurs)
+      if (jsCode.trim()) {
+        minifiedJS = jsCode
+          .replace(/\/\*[\s\S]*?\*\//g, '') // Supprimer commentaires multi-lignes
+          .replace(/\/\/.*$/gm, '') // Supprimer commentaires single-line
+          .replace(/\s+/g, ' ') // Remplacer multiples espaces
+          .replace(/;\s*}/g, '}') // Optimiser ; avant }
+          .trim();
       }
 
       setMinifiedCode({
@@ -108,8 +63,16 @@ export function MinificationPanel() {
         css: minifiedCSS,
         js: minifiedJS
       });
+
+      // Log dans la console de dev
+      if ((window as any).devConsole) {
+        (window as any).devConsole.addMessage('success', 'Minification', 'Code minifié avec succès');
+      }
     } catch (error) {
       console.error('Erreur lors de la minification:', error);
+      if ((window as any).devConsole) {
+        (window as any).devConsole.addMessage('error', 'Minification', 'Erreur lors de la minification');
+      }
     }
     
     setIsMinifying(false);
