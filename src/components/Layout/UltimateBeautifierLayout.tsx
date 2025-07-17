@@ -81,7 +81,7 @@ export function UltimateBeautifierLayout() {
   };
 
   return (
-  <div className="app-container">
+    <div className={`app-grid ${sidebarOpen ? '' : 'sidebar-collapsed'}`}>
     {/* Lien pour accéder directement au contenu principal (accessibilité) */}
     <a href="#main-content" className="sr-only focus:not-sr-only">
       Aller au contenu
