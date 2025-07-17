@@ -102,10 +102,12 @@ All colors MUST be HSL.
     overflow: hidden;
   }
 
-  /* Monaco Editor Styles */
-  .monaco-editor {
-    @apply rounded-lg;
-  }
+/* Styles du Monaco Editor */
+.monaco-editor {
+  -webkit-text-size-adjust: 100%; /* Évite le zoom automatique sur mobile */
+  @apply rounded-lg bg-background min-h-[300px]; /* Arrondi + fond + hauteur min */
+}
+
 
   /* File Icons */
   .file-icon.html { color: #e34c26; }

@@ -37,6 +37,11 @@ export function UltimateBeautifierLayout() {
     const handleDrop = (e: DragEvent) => {
       e.preventDefault();
       setIsDragActive(false);
+      // Gestion des fichiers déposés
+      const files = e.dataTransfer?.files;
+      if (files && files.length > 0) {
+        setFileCount(files.length);
+      }
     };
 
     document.addEventListener('dragover', handleDragOver);
@@ -58,65 +63,103 @@ export function UltimateBeautifierLayout() {
     setFileCount(count);
   };
 
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setFileCount(files.length);
+    }
+  };
+
   return (
-    <div className="app-container">
-      {/* Header */}
-      <header className="header">
-        <div className="logo">
-          <i className="fas fa-magic"></i>
-          <span>Ultimate Beautifier</span>
-        </div>
-        <div className="header-controls">
-          <Select value={currentTheme} onValueChange={setCurrentTheme}>
-            <SelectTrigger className="theme-selector">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">Default</SelectItem>
-              <SelectItem value="dracula">Dracula</SelectItem>
-              <SelectItem value="solarized">Solarized</SelectItem>
-              <SelectItem value="tokyo-night">Tokyo Night</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" className="command-palette">
-            <Monitor className="w-4 h-4 mr-2" />
-            Command (Ctrl+K)
-          </Button>
-        </div>
-      </header>
+  <div className="app-container">
+    {/* Lien pour accéder directement au contenu principal (accessibilité) */}
+    <a href="#main-content" className="sr-only focus:not-sr-only">
+      Aller au contenu
+    </a>
 
-      {/* Sidebar */}
-      <UltimateBeautifierSidebar 
-        collapsed={sidebarCollapsed}
-        onToggleCollapse={handleToggleCollapse}
-        onFileCountChange={handleFileCountChange}
-      />
+    {/* Header */}
+    <header className="header">
+      <div className="logo" aria-label="Logo Ultimate Beautifier">
+        <i className="fas fa-magic"></i>
+        <span>Ultimate Beautifier</span>
+      </div>
+      <div className="header-controls">
+        <Button 
+          variant="secondary" 
+          onClick={() => document.getElementById('fileInput')?.click()}
+          aria-label="Importer un fichier"
+        >
+          Importer un fichier
+        </Button>
+        <input
+  id="fileInput"
+  type="file"
+  className="sr-only"
+  aria-hidden="true"
+  tabIndex={-1}
+  onChange={handleFileInput}
+/>
 
-      {/* Main Content */}
-      <main className="main-content">
-        <EditorArea />
-        <PreviewArea />
-      </main>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="status-item">
-          <i className="fas fa-code"></i>
-          <span id="languageStatus">JavaScript</span>
-        </div>
-        <div className="status-item">
-          <i className="fas fa-save"></i>
-          <span>Auto-save enabled</span>
-        </div>
-        <div className="status-item">
-          <i className="fas fa-file"></i>
-          <span>{fileCount} file{fileCount !== 1 ? 's' : ''} open</span>
-        </div>
-      </footer>
+        <Select value={currentTheme} onValueChange={setCurrentTheme}>
+          <SelectTrigger
+            className="theme-selector"
+            aria-label="Changer de thème"
+            aria-haspopup="listbox"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="default">Default</SelectItem>
+            <SelectItem value="dracula">Dracula</SelectItem>
+            <SelectItem value="solarized">Solarized</SelectItem>
+            <SelectItem value="tokyo-night">Tokyo Night</SelectItem>
+          </SelectContent>
+        </Select>
 
-      {/* Overlays */}
-      {showWelcome && <WelcomeOverlay />}
-      <DragDropArea active={isDragActive} />
-    </div>
-  );
+        <Button 
+          variant="outline" 
+          className="command-palette"
+          aria-label="Ouvrir la palette de commandes"
+        >
+          <Monitor className="w-4 h-4 mr-2" />
+          Command (Ctrl+K)
+        </Button>
+      </div>
+    </header>
+
+    {/* Sidebar */}
+    <UltimateBeautifierSidebar 
+      collapsed={sidebarCollapsed}
+      onToggleCollapse={handleToggleCollapse}
+      onFileCountChange={handleFileCountChange}
+    />
+
+    {/* Main Content */}
+    <main id="main-content" className="main-content" aria-label="Zone principale">
+      <EditorArea />
+      <PreviewArea />
+    </main>
+
+    {/* Footer */}
+    <footer className="footer">
+      <div className="status-item">
+        <i className="fas fa-code"></i>
+        <span id="languageStatus">JavaScript</span>
+      </div>
+      <div className="status-item">
+        <i className="fas fa-save"></i>
+        <span>Auto-save enabled</span>
+      </div>
+      <div className="status-item" role="status" aria-live="polite">
+        <i className="fas fa-file"></i>
+        <span>{fileCount} file{fileCount !== 1 ? 's' : ''} open</span>
+      </div>
+    </footer>
+
+    {/* Overlays */}
+    {showWelcome && <WelcomeOverlay />}
+    <DragDropArea active={isDragActive} />
+  </div>
+);
 }

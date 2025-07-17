@@ -52,12 +52,24 @@ export function PreviewArea() {
             </TabsList>
             
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={handleRefresh}>
-                <RefreshCw className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={handleOpenExternal}>
-                <ExternalLink className="w-4 h-4" />
-              </Button>
+              <Button 
+  variant="ghost" 
+  size="sm" 
+  onClick={handleRefresh}
+  aria-label="Rafraîchir l’aperçu"
+>
+  <RefreshCw className="w-4 h-4" />
+</Button>
+
+              <Button 
+  variant="ghost" 
+  size="sm" 
+  onClick={handleOpenExternal}
+  aria-label="Ouvrir dans un nouvel onglet"
+>
+  <ExternalLink className="w-4 h-4" />
+</Button>
+
             </div>
           </div>
         </Tabs>

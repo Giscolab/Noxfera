@@ -15,11 +15,12 @@ function helloWorld() {
   const [activeFile, setActiveFile] = useState('script.js');
   const [language, setLanguage] = useState('javascript');
 
-  const openFiles = [
-    { name: 'script.js', active: true },
-    { name: 'styles.css', active: false },
-    { name: 'index.html', active: false },
-  ];
+  const [openFiles, setOpenFiles] = useState([
+  { name: 'script.js', active: true },
+  { name: 'styles.css', active: false },
+  { name: 'index.html', active: false },
+]);
+
 
   const handleCopy = (code: string) => {
     navigator.clipboard.writeText(code);
@@ -43,22 +44,31 @@ function helloWorld() {
       <div className="col-span-2 flex items-center gap-1 bg-card rounded-t-lg border-b border-border px-3 py-2 min-h-[40px] overflow-x-auto custom-scrollbar">
         {openFiles.map((file, index) => (
           <Button
-            key={index}
-            variant={file.active ? "default" : "ghost"}
-            size="sm"
-            className={`flex items-center gap-2 rounded-t-lg rounded-b-none h-8 ${
-              file.active ? 'bg-background border-b-2 border-primary' : ''
-            }`}
-            onClick={() => setActiveFile(file.name)}
-          >
-            <FileCode className="w-3 h-3" />
-            <span className="text-xs">{file.name}</span>
-            {file.active && (
-              <button className="ml-1 text-destructive hover:text-destructive/80">
-                ×
-              </button>
-            )}
-          </Button>
+  key={index}
+  variant={file.active ? "default" : "ghost"}
+  size="sm"
+  className={`flex items-center gap-2 rounded-t-lg rounded-b-none h-8 ${
+    file.active ? 'bg-background border-b-2 border-primary' : ''
+  }`}
+  onClick={() => setActiveFile(file.name)}
+>
+  <FileCode className="w-3 h-3" />
+  <span className="text-xs">{file.name}</span>
+  {file.active && (
+    <span
+      className="ml-1 text-destructive hover:text-destructive/80 cursor-pointer"
+      onClick={(e) => {
+        e.stopPropagation(); // évite le déclenchement du `onClick` parent
+		setOpenFiles(prev => prev.filter(f => f.name !== file.name));
+        console.log("Fermeture onglet pas encore implémentée");
+        // ici tu pourras ajouter la logique pour fermer l'onglet
+      }}
+    >
+      ×
+    </span>
+  )}
+</Button>
+
         ))}
       </div>
 
@@ -130,3 +140,5 @@ function helloWorld() {
     </>
   );
 }
+
+

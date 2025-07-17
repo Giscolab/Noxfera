@@ -44,9 +44,7 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, onFileC
 
   return (
     <aside 
-      className={`bg-card border-r border-border transition-all duration-300 relative flex flex-col ${
-        collapsed ? 'w-15' : 'w-64'
-      }`}
+      className={`bg-card border-r border-border transition-all duration-300 relative flex flex-col ${collapsed ? 'w-15' : 'w-64'}`}
       style={{ gridArea: 'sidebar' }}
     >
       {/* Sidebar Toggle */}
@@ -55,6 +53,7 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, onFileC
         size="sm"
         className="absolute -right-4 top-3 z-10 w-8 h-8 rounded-full shadow-lg"
         onClick={onToggleCollapse}
+        aria-label={collapsed ? "Développer la barre latérale" : "Réduire la barre latérale"}
       >
         {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
       </Button>
@@ -75,6 +74,7 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, onFileC
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9 bg-background"
+                  aria-label="Rechercher un fichier"
                 />
               </div>
 
@@ -87,6 +87,9 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, onFileC
                         ? 'bg-primary text-primary-foreground' 
                         : 'hover:bg-accent text-foreground'
                     }`}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Fichier ${file.name}`}
                   >
                     {getFileIcon(file.language)}
                     <span className="text-sm font-medium">{file.name}</span>
@@ -115,13 +118,14 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, onFileC
                   max={8}
                   step={1}
                   className="w-full"
+                  aria-label="Taille d'indentation"
                 />
               </div>
 
               <div>
                 <Label className="text-sm mb-2 block">Style d'accolades</Label>
                 <Select value={braceStyle} onValueChange={setBraceStyle}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full" aria-label="Sélectionner un style d'accolades">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -137,11 +141,12 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, onFileC
                 <Switch
                   checked={endWithNewline}
                   onCheckedChange={setEndWithNewline}
+                  aria-label="Finir le fichier par une nouvelle ligne"
                 />
               </div>
             </Card>
 
-            <Button className="w-full" size="lg">
+            <Button className="w-full" size="lg" aria-label="Formater le code">
               <Sparkles className="w-4 h-4 mr-2" />
               Formater le code
             </Button>

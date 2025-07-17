@@ -101,13 +101,15 @@ const WelcomeOverlay = () => {
 
           {/* Close Button */}
           <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowWelcome(false)}
-            className="absolute top-4 right-4"
-          >
-            <X className="w-4 h-4" />
-          </Button>
+  variant="ghost"
+  size="sm"
+  onClick={() => setShowWelcome(false)}
+  className="absolute top-4 right-4"
+  aria-label="Fermer l'écran de bienvenue"
+>
+  <X className="w-4 h-4" />
+</Button>
+
         </CardContent>
       </Card>
     </div>
