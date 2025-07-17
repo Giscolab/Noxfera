@@ -7,40 +7,42 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
+import FileExplorer from '../FileExplorer/FileExplorer';
+import useEditorStore from '@/stores/useEditorStore';
+import useFileStore from '@/stores/useFileStore';
 
 interface UltimateBeautifierSidebarProps {
   collapsed: boolean;
   onToggleCollapse: () => void;
-  onFileCountChange: (count: number) => void;
 }
 
-export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, onFileCountChange }: UltimateBeautifierSidebarProps) {
+export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse }: UltimateBeautifierSidebarProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [indentSize, setIndentSize] = useState([4]);
-  const [braceStyle, setBraceStyle] = useState('collapse');
-  const [endWithNewline, setEndWithNewline] = useState(true);
-  const [files] = useState([
-    { name: 'script.js', language: 'javascript', active: true },
-    { name: 'styles.css', language: 'css', active: false },
-    { name: 'index.html', language: 'html', active: false },
-  ]);
+  
+  const { 
+    beautifyOptions, 
+    setBeautifyOptions, 
+    formatCode 
+  } = useEditorStore();
+  
+  const { files } = useFileStore();
+  
+  const [indentSize, setIndentSize] = useState([beautifyOptions.indent_size]);
+  const [braceStyle, setBraceStyle] = useState(beautifyOptions.brace_style);
+  const [endWithNewline, setEndWithNewline] = useState(beautifyOptions.end_with_newline);
 
-  React.useEffect(() => {
-    onFileCountChange(files.length);
-  }, [files.length, onFileCountChange]);
-
-  const getFileIcon = (language: string) => {
-    switch (language) {
-      case 'html': return <FileText className="w-4 h-4 text-orange-500" />;
-      case 'css': return <Code className="w-4 h-4 text-blue-500" />;
-      case 'javascript': return <Braces className="w-4 h-4 text-yellow-500" />;
-      default: return <File className="w-4 h-4 text-muted-foreground" />;
-    }
+  const handleOptionsChange = () => {
+    setBeautifyOptions({
+      ...beautifyOptions,
+      indent_size: indentSize[0],
+      brace_style: braceStyle,
+      end_with_newline: endWithNewline,
+    });
   };
 
-  const filteredFiles = files.filter(file => 
-    file.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  React.useEffect(() => {
+    handleOptionsChange();
+  }, [indentSize, braceStyle, endWithNewline]);
 
   return (
     <aside 
@@ -78,24 +80,7 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, onFileC
                 />
               </div>
 
-              <div className="space-y-1">
-                {filteredFiles.map((file, index) => (
-                  <div
-                    key={index}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors ${
-                      file.active 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'hover:bg-accent text-foreground'
-                    }`}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Fichier ${file.name}`}
-                  >
-                    {getFileIcon(file.language)}
-                    <span className="text-sm font-medium">{file.name}</span>
-                  </div>
-                ))}
-              </div>
+              <FileExplorer />
             </div>
           </div>
 
@@ -146,7 +131,12 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, onFileC
               </div>
             </Card>
 
-            <Button className="w-full" size="lg" aria-label="Formater le code">
+            <Button 
+              className="w-full" 
+              size="lg" 
+              onClick={formatCode}
+              aria-label="Formater le code"
+            >
               <Sparkles className="w-4 h-4 mr-2" />
               Formater le code
             </Button>

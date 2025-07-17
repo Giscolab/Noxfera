@@ -9,16 +9,30 @@ import { PreviewArea } from '../Preview/PreviewArea';
 import WelcomeOverlay from '../Welcome/WelcomeOverlay';
 // @ts-ignore
 import DragDropArea from '../DragDrop/DragDropArea';
+import useEditorStore from '@/stores/useEditorStore';
+import useFileStore from '@/stores/useFileStore';
 
 export function UltimateBeautifierLayout() {
-  const [currentTheme, setCurrentTheme] = useState('default');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(true);
+  const { 
+    currentTheme, 
+    setCurrentTheme, 
+    sidebarOpen, 
+    setSidebarOpen, 
+    showWelcome, 
+    setShowWelcome,
+    currentLanguage 
+  } = useEditorStore();
+  
+  const { 
+    files, 
+    importFiles, 
+    getAllFiles 
+  } = useFileStore();
+  
   const [isDragActive, setIsDragActive] = useState(false);
-  const [fileCount, setFileCount] = useState(0);
 
   useEffect(() => {
-    document.body.className = currentTheme;
+    document.documentElement.className = currentTheme;
   }, [currentTheme]);
 
   useEffect(() => {
@@ -34,13 +48,13 @@ export function UltimateBeautifierLayout() {
       }
     };
 
-    const handleDrop = (e: DragEvent) => {
+    const handleDrop = async (e: DragEvent) => {
       e.preventDefault();
       setIsDragActive(false);
-      // Gestion des fichiers déposés
-      const files = e.dataTransfer?.files;
-      if (files && files.length > 0) {
-        setFileCount(files.length);
+      
+      const droppedFiles = e.dataTransfer?.files;
+      if (droppedFiles && droppedFiles.length > 0) {
+        await importFiles(Array.from(droppedFiles));
       }
     };
 
@@ -56,17 +70,13 @@ export function UltimateBeautifierLayout() {
   }, []);
 
   const handleToggleCollapse = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
+    setSidebarOpen(!sidebarOpen);
   };
 
-  const handleFileCountChange = (count: number) => {
-    setFileCount(count);
-  };
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setFileCount(files.length);
+  const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files;
+    if (selectedFiles && selectedFiles.length > 0) {
+      await importFiles(Array.from(selectedFiles));
     }
   };
 
@@ -130,9 +140,8 @@ export function UltimateBeautifierLayout() {
 
     {/* Sidebar */}
     <UltimateBeautifierSidebar 
-      collapsed={sidebarCollapsed}
+      collapsed={!sidebarOpen}
       onToggleCollapse={handleToggleCollapse}
-      onFileCountChange={handleFileCountChange}
     />
 
     {/* Main Content */}
@@ -145,7 +154,7 @@ export function UltimateBeautifierLayout() {
     <footer className="footer">
       <div className="status-item">
         <i className="fas fa-code"></i>
-        <span id="languageStatus">JavaScript</span>
+        <span id="languageStatus">{currentLanguage}</span>
       </div>
       <div className="status-item">
         <i className="fas fa-save"></i>
@@ -153,7 +162,7 @@ export function UltimateBeautifierLayout() {
       </div>
       <div className="status-item" role="status" aria-live="polite">
         <i className="fas fa-file"></i>
-        <span>{fileCount} file{fileCount !== 1 ? 's' : ''} open</span>
+        <span>{files.length} file{files.length !== 1 ? 's' : ''} open</span>
       </div>
     </footer>
 

@@ -1,25 +1,36 @@
-import React, { useState } from 'react';
-import { Copy, Download, FileCode, Languages } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { Copy, Download, FileCode, Languages, Play } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MonacoEditor } from './MonacoEditor';
+import useEditorStore from '@/stores/useEditorStore';
+import useFileStore from '@/stores/useFileStore';
 
 export function EditorArea() {
-  const [originalCode, setOriginalCode] = useState(`// Collez votre code ici ou glissez-déposez un fichier
-function helloWorld() {
-  console.log("Hello, world!");
-}`);
+  const { 
+    originalCode, 
+    formattedCode, 
+    currentLanguage, 
+    setOriginalCode, 
+    formatCode,
+    detectLanguage 
+  } = useEditorStore();
   
-  const [formattedCode, setFormattedCode] = useState('');
-  const [activeFile, setActiveFile] = useState('script.js');
-  const [language, setLanguage] = useState('javascript');
+  const { 
+    files, 
+    activeFileId, 
+    setActiveFile, 
+    removeFile, 
+    getActiveFile 
+  } = useFileStore();
+  
+  const activeFile = getActiveFile();
 
-  const [openFiles, setOpenFiles] = useState([
-  { name: 'script.js', active: true },
-  { name: 'styles.css', active: false },
-  { name: 'index.html', active: false },
-]);
+  useEffect(() => {
+    if (activeFile) {
+      setOriginalCode(activeFile.content);
+    }
+  }, [activeFile, setOriginalCode]);
 
 
   const handleCopy = (code: string) => {
@@ -42,33 +53,30 @@ function helloWorld() {
     <>
       {/* File Tabs */}
       <div className="col-span-2 flex items-center gap-1 bg-card rounded-t-lg border-b border-border px-3 py-2 min-h-[40px] overflow-x-auto custom-scrollbar">
-        {openFiles.map((file, index) => (
+        {files.map((file) => (
           <Button
-  key={index}
-  variant={file.active ? "default" : "ghost"}
-  size="sm"
-  className={`flex items-center gap-2 rounded-t-lg rounded-b-none h-8 ${
-    file.active ? 'bg-background border-b-2 border-primary' : ''
-  }`}
-  onClick={() => setActiveFile(file.name)}
->
-  <FileCode className="w-3 h-3" />
-  <span className="text-xs">{file.name}</span>
-  {file.active && (
-    <span
-      className="ml-1 text-destructive hover:text-destructive/80 cursor-pointer"
-      onClick={(e) => {
-        e.stopPropagation(); // évite le déclenchement du `onClick` parent
-		setOpenFiles(prev => prev.filter(f => f.name !== file.name));
-        console.log("Fermeture onglet pas encore implémentée");
-        // ici tu pourras ajouter la logique pour fermer l'onglet
-      }}
-    >
-      ×
-    </span>
-  )}
-</Button>
-
+            key={file.id}
+            variant={file.id === activeFileId ? "default" : "ghost"}
+            size="sm"
+            className={`flex items-center gap-2 rounded-t-lg rounded-b-none h-8 ${
+              file.id === activeFileId ? 'bg-background border-b-2 border-primary' : ''
+            }`}
+            onClick={() => setActiveFile(file.id)}
+          >
+            <FileCode className="w-3 h-3" />
+            <span className="text-xs">{file.name}</span>
+            {file.id === activeFileId && (
+              <span
+                className="ml-1 text-destructive hover:text-destructive/80 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeFile(file.id);
+                }}
+              >
+                ×
+              </span>
+            )}
+          </Button>
         ))}
       </div>
 
@@ -77,8 +85,21 @@ function helloWorld() {
         <CardHeader className="p-3 bg-muted/50 flex flex-row items-center justify-between">
           <h3 className="text-sm font-medium">Code original</h3>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" title="Détecter le langage">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => detectLanguage(originalCode)}
+              title="Détecter le langage"
+            >
               <Languages className="w-4 h-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={formatCode}
+              title="Formater le code"
+            >
+              <Play className="w-4 h-4" />
             </Button>
             <Button 
               variant="ghost" 
@@ -95,7 +116,7 @@ function helloWorld() {
             <MonacoEditor
               value={originalCode}
               onChange={setOriginalCode}
-              language={language}
+              language={currentLanguage}
               theme="vs-dark"
             />
           </div>
@@ -118,7 +139,7 @@ function helloWorld() {
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => handleDownload(formattedCode, `formatted_${activeFile}`)}
+              onClick={() => handleDownload(formattedCode, `formatted_${activeFile?.name || 'code'}`)}
               title="Télécharger"
             >
               <Download className="w-4 h-4" />
@@ -129,8 +150,7 @@ function helloWorld() {
           <div className="h-[400px] relative">
             <MonacoEditor
               value={formattedCode}
-              onChange={setFormattedCode}
-              language={language}
+              language={currentLanguage}
               theme="vs-dark"
               readOnly
             />
