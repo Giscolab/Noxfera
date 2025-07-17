@@ -25,6 +25,8 @@ export function UltimateBeautifierLayout() {
     currentLanguage 
   } = useEditorStore();
   
+  const { advancedMode } = useDevToolsStore();
+  
   const { 
     files, 
     importFiles, 
@@ -158,8 +160,16 @@ export function UltimateBeautifierLayout() {
 
     {/* Main Content */}
     <main id="main-content" className="main-content" aria-label="Zone principale">
-      <EditorArea />
-      <PreviewArea />
+      {advancedMode ? (
+        <div className="col-span-2 h-full">
+          <DevToolsManager />
+        </div>
+      ) : (
+        <>
+          <EditorArea />
+          <PreviewArea />
+        </>
+      )}
     </main>
 
     {/* Footer */}

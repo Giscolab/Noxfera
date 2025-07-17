@@ -352,6 +352,18 @@ All colors MUST be HSL.
       calc(-1 * var(--neumorph-distance) * 0.5) calc(-1 * var(--neumorph-distance) * 0.5) calc(var(--neumorph-blur) * 0.5) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) * 0.8));
   }
   
+  
+  /* Classes spécialisées pour les toggles neumorphiques */
+  .neumorph-toggle {
+    @apply p-1 rounded-xl;
+    background: linear-gradient(145deg, 
+      hsl(var(--background)), 
+      hsl(var(--muted)));
+    box-shadow: 
+      inset calc(var(--neumorph-distance) * 0.5) calc(var(--neumorph-distance) * 0.5) calc(var(--neumorph-blur) * 0.5) hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) * 0.5)), 
+      inset calc(-1 * var(--neumorph-distance) * 0.5) calc(-1 * var(--neumorph-distance) * 0.5) calc(var(--neumorph-blur) * 0.5) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) * 0.5));
+  }
+
   .neumorph-tab.active {
     @apply bg-accent;
     box-shadow: 

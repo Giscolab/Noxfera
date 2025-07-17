@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,7 +14,8 @@ import {
   Shield, 
   Activity, 
   BarChart3,
-  X
+  X,
+  Terminal
 } from 'lucide-react';
 import useDevToolsStore from '@/stores/useDevToolsStore';
 import { LivePreview } from './LivePreview';
@@ -22,9 +23,12 @@ import { JSHintPanel } from './JSHintPanel';
 import { MinificationPanel } from './MinificationPanel';
 import { ObfuscationPanel } from './ObfuscationPanel';
 import { ComplexityPanel } from './ComplexityPanel';
-import { DashboardPanel } from './DashboardPanel';
+import { CodeStatsPanel } from './CodeStatsPanel';
+import { DevConsole } from './DevConsole';
 
 export function DevToolsManager() {
+  const [showConsole, setShowConsole] = useState(false);
+  
   const {
     advancedMode,
     setAdvancedMode,
@@ -84,7 +88,7 @@ export function DevToolsManager() {
       icon: BarChart3,
       active: showDashboard,
       toggle: toggleDashboard,
-      component: DashboardPanel,
+      component: CodeStatsPanel,
       description: 'Métriques et statistiques du code'
     }
   ];
@@ -134,6 +138,16 @@ export function DevToolsManager() {
                   Réinitialiser
                 </Button>
               )}
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowConsole(!showConsole)}
+                className={`neumorph-button ${showConsole ? 'bg-primary text-primary-foreground' : ''}`}
+                title="Console de développement"
+              >
+                <Terminal className="w-4 h-4" />
+              </Button>
             </div>
           </div>
         </CardHeader>
@@ -204,12 +218,18 @@ export function DevToolsManager() {
             <TabsContent value="dashboard" className="h-full m-0">
               <div className="grid grid-cols-2 gap-6 h-full">
                 <LivePreview />
-                <DashboardPanel />
+                <CodeStatsPanel />
               </div>
             </TabsContent>
           </div>
         </Tabs>
       </div>
+      
+      {/* Console de développement */}
+      <DevConsole 
+        isOpen={showConsole} 
+        onToggle={() => setShowConsole(!showConsole)} 
+      />
     </div>
   );
 }

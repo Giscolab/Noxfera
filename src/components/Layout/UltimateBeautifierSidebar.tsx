@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import FileExplorer from '../FileExplorer/FileExplorer';
 import useEditorStore from '@/stores/useEditorStore';
 import useFileStore from '@/stores/useFileStore';
+import useDevToolsStore from '@/stores/useDevToolsStore';
 
 interface UltimateBeautifierSidebarProps {
   collapsed: boolean;
@@ -26,6 +27,11 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse }: Ultim
   } = useEditorStore();
   
   const { files } = useFileStore();
+  
+  const { 
+    advancedMode, 
+    setAdvancedMode 
+  } = useDevToolsStore();
   
   const [indentSize, setIndentSize] = useState([beautifyOptions.indent_size]);
   const [braceStyle, setBraceStyle] = useState(beautifyOptions.brace_style);
@@ -141,6 +147,44 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse }: Ultim
               <Sparkles className="w-4 h-4 mr-2" />
               Formater le code
             </Button>
+          </div>
+
+          {/* Options Avancées Section */}
+          <div className="p-4 space-y-4 border-t border-border">
+            <h3 className="text-xs uppercase tracking-wide text-muted-foreground mb-3">
+              Options avancées
+            </h3>
+            
+            <Card className="neumorph-panel p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium">Mode avancé</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Active les outils de développement
+                  </p>
+                </div>
+                <div className="neumorph-toggle">
+                  <Switch
+                    checked={advancedMode}
+                    onCheckedChange={setAdvancedMode}
+                    aria-label="Activer le mode avancé"
+                    className="data-[state=checked]:bg-primary"
+                  />
+                </div>
+              </div>
+              
+              {advancedMode && (
+                <div className="neumorph-inset p-3 rounded-xl">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Code className="w-3 h-3" />
+                    <span>Dev Tools activés</span>
+                  </div>
+                  <p className="text-xs mt-1 text-primary">
+                    Prévisualisation, JSHint, Minification, Obfuscation, Analyse de complexité
+                  </p>
+                </div>
+              )}
+            </Card>
           </div>
         </>
       )}
