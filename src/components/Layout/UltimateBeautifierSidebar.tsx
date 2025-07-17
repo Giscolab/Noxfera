@@ -53,6 +53,7 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse }: Ultim
       <Button
         variant="default"
         size="sm"
+        type="button"
         className="absolute -right-4 top-3 z-10 w-8 h-8 rounded-full shadow-lg"
         onClick={onToggleCollapse}
         aria-label={collapsed ? "Développer la barre latérale" : "Réduire la barre latérale"}

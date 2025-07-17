@@ -77,6 +77,7 @@ const WelcomeOverlay = () => {
                   <Button
                     key={template.type}
                     variant="outline"
+                    type="button"
                     onClick={() => handleTemplate(template.type)}
                     className="p-4 h-auto flex-col gap-2 hover:bg-primary/10"
                   >
@@ -89,11 +90,11 @@ const WelcomeOverlay = () => {
 
             {/* Actions */}
             <div className="flex gap-4 justify-center pt-4">
-              <Button onClick={() => setShowWelcome(false)} className="px-8">
+              <Button type="button" onClick={() => setShowWelcome(false)} className="px-8">
                 <FileCode className="w-4 h-4 mr-2" />
                 Start Coding
               </Button>
-              <Button variant="outline" onClick={() => setShowWelcome(false)}>
+              <Button variant="outline" type="button" onClick={() => setShowWelcome(false)}>
                 Skip Welcome
               </Button>
             </div>
@@ -101,14 +102,15 @@ const WelcomeOverlay = () => {
 
           {/* Close Button */}
           <Button
-  variant="ghost"
-  size="sm"
-  onClick={() => setShowWelcome(false)}
-  className="absolute top-4 right-4"
-  aria-label="Fermer l'écran de bienvenue"
->
-  <X className="w-4 h-4" />
-</Button>
+            variant="ghost"
+            size="sm"
+            type="button"
+            onClick={() => setShowWelcome(false)}
+            className="absolute top-4 right-4"
+            aria-label="Fermer l'écran de bienvenue"
+          >
+            <X className="w-4 h-4" />
+          </Button>
 
         </CardContent>
       </Card>

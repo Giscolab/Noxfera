@@ -96,6 +96,7 @@ export function UltimateBeautifierLayout() {
       <div className="header-controls">
         <Button 
           variant="secondary" 
+          type="button"
           onClick={() => document.getElementById('fileInput')?.click()}
           aria-label="Importer un fichier"
         >
