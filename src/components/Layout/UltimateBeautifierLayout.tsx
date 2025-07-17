@@ -5,6 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { UltimateBeautifierSidebar } from './UltimateBeautifierSidebar';
 import { EditorArea } from '../Editor/EditorArea';
 import { PreviewArea } from '../Preview/PreviewArea';
+import { DevToolsManager } from '../DevTools/DevToolsManager';
+import useDevToolsStore from '@/stores/useDevToolsStore';
 // @ts-ignore
 import WelcomeOverlay from '../Welcome/WelcomeOverlay';
 // @ts-ignore

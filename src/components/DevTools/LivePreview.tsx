@@ -1,0 +1,139 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { MonacoEditor } from '../Editor/MonacoEditor';
+import { RefreshCw, ExternalLink, Code, Eye } from 'lucide-react';
+import useDevToolsStore from '@/stores/useDevToolsStore';
+
+export function LivePreview() {
+  const {
+    htmlCode,
+    cssCode,
+    jsCode,
+    setHtmlCode,
+    setCssCode,
+    setJsCode,
+    generatePreviewHTML
+  } = useDevToolsStore();
+
+  const [activeTab, setActiveTab] = useState('html');
+  const [previewKey, setPreviewKey] = useState(0);
+
+  const previewHTML = useMemo(() => {
+    return generatePreviewHTML();
+  }, [htmlCode, cssCode, jsCode, generatePreviewHTML]);
+
+  const handleRefresh = () => {
+    setPreviewKey(prev => prev + 1);
+  };
+
+  const handleOpenExternal = () => {
+    const blob = new Blob([previewHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+  };
+
+  const getCurrentCode = () => {
+    switch (activeTab) {
+      case 'html': return htmlCode;
+      case 'css': return cssCode;
+      case 'js': return jsCode;
+      default: return '';
+    }
+  };
+
+  const handleCodeChange = (value: string) => {
+    switch (activeTab) {
+      case 'html': setHtmlCode(value); break;
+      case 'css': setCssCode(value); break;
+      case 'js': setJsCode(value); break;
+    }
+  };
+
+  const getLanguage = () => {
+    switch (activeTab) {
+      case 'html': return 'html';
+      case 'css': return 'css';
+      case 'js': return 'javascript';
+      default: return 'html';
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-2 gap-6 h-full">
+      {/* Éditeur à gauche */}
+      <Card className="neumorph-panel flex flex-col">
+        <CardHeader className="p-4 bg-muted/30 flex flex-row items-center justify-between rounded-t-2xl border-b border-border/30">
+          <div className="flex items-center gap-2">
+            <Code className="w-5 h-5 text-primary" />
+            <h3 className="text-sm font-semibold text-foreground">Éditeur de Code</h3>
+          </div>
+          
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
+            <TabsList className="grid w-auto grid-cols-3 bg-background neumorph-flat">
+              <TabsTrigger value="html" className="neumorph-tab data-[state=active]:neumorph-pressed">HTML</TabsTrigger>
+              <TabsTrigger value="css" className="neumorph-tab data-[state=active]:neumorph-pressed">CSS</TabsTrigger>
+              <TabsTrigger value="js" className="neumorph-tab data-[state=active]:neumorph-pressed">JS</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </CardHeader>
+        
+        <CardContent className="p-0 flex-1">
+          <div className="h-[500px] neumorph-inset rounded-b-2xl overflow-hidden">
+            <MonacoEditor
+              value={getCurrentCode()}
+              onChange={handleCodeChange}
+              language={getLanguage()}
+              theme="vs-light"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Aperçu à droite */}
+      <Card className="neumorph-panel flex flex-col">
+        <CardHeader className="p-4 bg-muted/30 flex flex-row items-center justify-between rounded-t-2xl border-b border-border/30">
+          <div className="flex items-center gap-2">
+            <Eye className="w-5 h-5 text-primary" />
+            <h3 className="text-sm font-semibold text-foreground">Aperçu Live</h3>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleRefresh}
+              className="neumorph-button h-8 w-8 p-0"
+              title="Rafraîchir l'aperçu"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleOpenExternal}
+              className="neumorph-button h-8 w-8 p-0"
+              title="Ouvrir dans un nouvel onglet"
+            >
+              <ExternalLink className="w-4 h-4" />
+            </Button>
+          </div>
+        </CardHeader>
+        
+        <CardContent className="p-0 flex-1">
+          <div className="h-[500px] neumorph-inset rounded-b-2xl overflow-hidden">
+            <iframe
+              key={previewKey}
+              className="w-full h-full border-none bg-white rounded-b-2xl"
+              title="Aperçu du code"
+              srcDoc={previewHTML}
+              sandbox="allow-scripts allow-same-origin allow-modals"
+            />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

@@ -8,11 +8,11 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Lovable.dev Neumorphic Theme - Light Mode */
+    /* Lovable.dev Neumorphic Theme - Light Mode Authentique */
     --primary: 262 83% 58%;
     --primary-dark: 262 83% 50%;
     --secondary: 220 14% 96%;
-    --background: 220 14% 96%;
+    --background: 220 14% 95%;
     --surface: 0 0% 100%;
     --text-primary: 224 71% 4%;
     --text-secondary: 220 9% 46%;
@@ -24,15 +24,15 @@ All colors MUST be HSL.
 
     /* Map to standard variables */
     --foreground: 224 71% 4%;
-    --card: 0 0% 100%;
+    --card: 220 14% 96%;
     --card-foreground: 224 71% 4%;
-    --popover: 0 0% 100%;
+    --popover: 220 14% 96%;
     --popover-foreground: 224 71% 4%;
     --primary-foreground: 210 20% 98%;
     --secondary-foreground: 220 9% 46%;
-    --muted: 220 14% 96%;
+    --muted: 220 14% 93%;
     --muted-foreground: 220 9% 46%;
-    --accent: 220 14% 96%;
+    --accent: 220 14% 97%;
     --accent-foreground: 220 9% 46%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 20% 98%;
@@ -41,18 +41,27 @@ All colors MUST be HSL.
     --radius: 0.75rem;
 
     /* Sidebar variables */
-    --sidebar-background: 0 0% 100%;
+    --sidebar-background: 220 14% 96%;
     --sidebar-foreground: 224 71% 4%;
     --sidebar-primary: 262 83% 58%;
     --sidebar-primary-foreground: 210 20% 98%;
-    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent: 220 14% 93%;
     --sidebar-accent-foreground: 220 9% 46%;
-    --sidebar-border: 220 13% 91%;
+    --sidebar-border: 220 13% 88%;
     --sidebar-ring: 262 83% 58%;
 
-    /* Neumorphic shadow variables */
-    --neumorph-shadow-light: 0 0% 100%;
-    --neumorph-shadow-dark: 220 13% 91%;
+    /* Variables neumorphiques authentiques */
+    --neumorph-distance: 12px;
+    --neumorph-intensity: 0.15;
+    --neumorph-blur: 24px;
+    --neumorph-light: 220 50% 98%;
+    --neumorph-dark: 220 14% 82%;
+    
+    /* Ombres neumorphiques */
+    --neumorph-shadow-light: calc(-1 * var(--neumorph-distance)) calc(-1 * var(--neumorph-distance)) var(--neumorph-blur) hsl(var(--neumorph-light) / var(--neumorph-intensity));
+    --neumorph-shadow-dark: var(--neumorph-distance) var(--neumorph-distance) var(--neumorph-blur) hsl(var(--neumorph-dark) / var(--neumorph-intensity));
+    --neumorph-inset-light: inset calc(-1 * var(--neumorph-distance)) calc(-1 * var(--neumorph-distance)) var(--neumorph-blur) hsl(var(--neumorph-light) / var(--neumorph-intensity));
+    --neumorph-inset-dark: inset var(--neumorph-distance) var(--neumorph-distance) var(--neumorph-blur) hsl(var(--neumorph-dark) / var(--neumorph-intensity));
   }
 
   /* Dracula Theme */
@@ -239,39 +248,118 @@ All colors MUST be HSL.
     grid-template-columns: 80px 1fr;
   }
 
-  /* Neumorphic button classes */
-  .neumorph-button {
-    @apply bg-card border border-border rounded-xl transition-all duration-200;
+  /* Classes neumorphiques authentiques */
+  .neumorph-raised {
+    @apply bg-card border border-border/30 rounded-xl transition-all duration-300;
     box-shadow: 
-      6px 6px 12px hsl(var(--neumorph-shadow-dark)), 
-      -6px -6px 12px hsl(var(--neumorph-shadow-light));
+      var(--neumorph-shadow-dark), 
+      var(--neumorph-shadow-light);
+    background: linear-gradient(145deg, 
+      hsl(var(--neumorph-light) / 0.8), 
+      hsl(var(--neumorph-dark) / 0.1));
   }
-
+  
+  .neumorph-pressed {
+    @apply bg-card border border-border/30 rounded-xl;
+    box-shadow: 
+      var(--neumorph-inset-dark), 
+      var(--neumorph-inset-light);
+    background: linear-gradient(145deg, 
+      hsl(var(--neumorph-dark) / 0.1), 
+      hsl(var(--neumorph-light) / 0.8));
+  }
+  
+  .neumorph-flat {
+    @apply bg-background border border-border/20 rounded-xl;
+    box-shadow: 
+      calc(var(--neumorph-distance) / 2) calc(var(--neumorph-distance) / 2) calc(var(--neumorph-blur) / 2) hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) / 2)), 
+      calc(-1 * var(--neumorph-distance) / 2) calc(-1 * var(--neumorph-distance) / 2) calc(var(--neumorph-blur) / 2) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) / 2));
+  }
+  
+  .neumorph-panel {
+    @apply bg-card border border-border/20 rounded-2xl;
+    box-shadow: 
+      calc(var(--neumorph-distance) * 1.5) calc(var(--neumorph-distance) * 1.5) calc(var(--neumorph-blur) * 1.5) hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) * 1.2)), 
+      calc(-1 * var(--neumorph-distance) * 1.5) calc(-1 * var(--neumorph-distance) * 1.5) calc(var(--neumorph-blur) * 1.5) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) * 1.2));
+    background: linear-gradient(145deg, 
+      hsl(var(--background)), 
+      hsl(var(--muted)));
+  }
+  
+  .neumorph-inset {
+    @apply bg-muted border border-border/30 rounded-xl;
+    box-shadow: 
+      var(--neumorph-inset-dark), 
+      var(--neumorph-inset-light);
+    background: linear-gradient(145deg, 
+      hsl(var(--muted)), 
+      hsl(var(--background)));
+  }
+  
+  .neumorph-button {
+    @apply bg-card border border-border/20 rounded-xl transition-all duration-300 cursor-pointer;
+    box-shadow: 
+      calc(var(--neumorph-distance) * 0.8) calc(var(--neumorph-distance) * 0.8) calc(var(--neumorph-blur) * 0.8) hsl(var(--neumorph-dark) / var(--neumorph-intensity)), 
+      calc(-1 * var(--neumorph-distance) * 0.8) calc(-1 * var(--neumorph-distance) * 0.8) calc(var(--neumorph-blur) * 0.8) hsl(var(--neumorph-light) / var(--neumorph-intensity));
+    background: linear-gradient(145deg, 
+      hsl(var(--background)), 
+      hsl(var(--muted) / 0.5));
+  }
+  
   .neumorph-button:hover {
     box-shadow: 
-      4px 4px 8px hsl(var(--neumorph-shadow-dark)), 
-      -4px -4px 8px hsl(var(--neumorph-shadow-light));
+      calc(var(--neumorph-distance) * 1.2) calc(var(--neumorph-distance) * 1.2) calc(var(--neumorph-blur) * 1.2) hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) * 1.2)), 
+      calc(-1 * var(--neumorph-distance) * 1.2) calc(-1 * var(--neumorph-distance) * 1.2) calc(var(--neumorph-blur) * 1.2) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) * 1.2));
+    transform: translateY(-2px);
+    background: linear-gradient(145deg, 
+      hsl(var(--accent)), 
+      hsl(var(--background)));
   }
-
+  
   .neumorph-button:active {
     box-shadow: 
-      inset 2px 2px 4px hsl(var(--neumorph-shadow-dark)), 
-      inset -2px -2px 4px hsl(var(--neumorph-shadow-light));
+      var(--neumorph-inset-dark), 
+      var(--neumorph-inset-light);
+    transform: translateY(1px);
+    background: linear-gradient(145deg, 
+      hsl(var(--muted)), 
+      hsl(var(--accent)));
   }
-
-  /* Neumorphic panel classes */
-  .neumorph-panel {
-    @apply bg-card border border-border rounded-xl;
+  
+  /* Classes spécialisées pour les dev tools */
+  .neumorph-floating {
+    @apply bg-card/95 border border-border/40 rounded-2xl backdrop-blur-xl;
     box-shadow: 
-      8px 8px 16px hsl(var(--neumorph-shadow-dark)), 
-      -8px -8px 16px hsl(var(--neumorph-shadow-light));
+      0 8px 32px hsl(var(--neumorph-dark) / 0.2),
+      0 -2px 16px hsl(var(--neumorph-light) / 0.8),
+      inset 0 1px 2px hsl(var(--neumorph-light) / 0.9);
+    background: linear-gradient(145deg, 
+      hsl(var(--card) / 0.95), 
+      hsl(var(--background) / 0.9));
   }
-
-  .neumorph-inset {
-    @apply bg-card border border-border rounded-xl;
+  
+  .neumorph-glass {
+    @apply bg-background/90 border border-border/30 rounded-xl backdrop-blur-2xl;
     box-shadow: 
-      inset 4px 4px 8px hsl(var(--neumorph-shadow-dark)), 
-      inset -4px -4px 8px hsl(var(--neumorph-shadow-light));
+      0 8px 32px hsl(var(--neumorph-dark) / 0.1),
+      inset 0 1px 0 hsl(var(--neumorph-light) / 0.9);
+  }
+  
+  .neumorph-tab {
+    @apply bg-card border border-border/30 rounded-t-xl transition-all duration-200;
+    box-shadow: 
+      calc(var(--neumorph-distance) * 0.5) calc(var(--neumorph-distance) * 0.5) calc(var(--neumorph-blur) * 0.5) hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) * 0.8)), 
+      calc(-1 * var(--neumorph-distance) * 0.5) calc(-1 * var(--neumorph-distance) * 0.5) calc(var(--neumorph-blur) * 0.5) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) * 0.8));
+  }
+  
+  .neumorph-tab.active {
+    @apply bg-accent;
+    box-shadow: 
+      var(--neumorph-inset-dark), 
+      var(--neumorph-inset-light);
+    background: linear-gradient(145deg, 
+      hsl(var(--accent)), 
+      hsl(var(--background)));
   }
 
   @media (max-width: 900px) {
