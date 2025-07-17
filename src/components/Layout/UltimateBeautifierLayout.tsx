@@ -5,8 +5,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { UltimateBeautifierSidebar } from './UltimateBeautifierSidebar';
 import { EditorArea } from '../Editor/EditorArea';
 import { PreviewArea } from '../Preview/PreviewArea';
-import { DevToolsManager } from '../DevTools/DevToolsManager';
-import useDevToolsStore from '@/stores/useDevToolsStore';
 // @ts-ignore
 import WelcomeOverlay from '../Welcome/WelcomeOverlay';
 // @ts-ignore
@@ -25,7 +23,7 @@ export function UltimateBeautifierLayout() {
     currentLanguage 
   } = useEditorStore();
   
-  const { advancedMode } = useDevToolsStore();
+  const [advancedMode, setAdvancedMode] = useState(false);
   
   const { 
     files, 
@@ -161,8 +159,11 @@ export function UltimateBeautifierLayout() {
     {/* Main Content */}
     <main id="main-content" className="main-content" aria-label="Zone principale">
       {advancedMode ? (
-        <div className="col-span-2 h-full">
-          <DevToolsManager />
+        <div className="col-span-2 h-full flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-2">Dev Tools Mode</h2>
+            <p className="text-muted-foreground">Mode avancé activé !</p>
+          </div>
         </div>
       ) : (
         <>

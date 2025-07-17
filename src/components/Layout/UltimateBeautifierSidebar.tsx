@@ -10,7 +10,6 @@ import { Card } from "@/components/ui/card";
 import FileExplorer from '../FileExplorer/FileExplorer';
 import useEditorStore from '@/stores/useEditorStore';
 import useFileStore from '@/stores/useFileStore';
-import useDevToolsStore from '@/stores/useDevToolsStore';
 
 interface UltimateBeautifierSidebarProps {
   collapsed: boolean;
@@ -28,10 +27,7 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse }: Ultim
   
   const { files } = useFileStore();
   
-  const { 
-    advancedMode, 
-    setAdvancedMode 
-  } = useDevToolsStore();
+  const [advancedMode, setAdvancedMode] = useState(false);
   
   const [indentSize, setIndentSize] = useState([beautifyOptions.indent_size]);
   const [braceStyle, setBraceStyle] = useState(beautifyOptions.brace_style);
