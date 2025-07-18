@@ -6,7 +6,7 @@ import { Shield, Download, Copy, FileText, Settings } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import useDevToolsStore from '@/stores/useDevToolsStore';
+import useEditorStore from '@/stores/useEditorStore';
 
 // Import dynamique pour éviter les erreurs SSR
 let JavaScriptObfuscator: any = null;
@@ -28,7 +28,9 @@ interface ObfuscationOptions {
 }
 
 export function ObfuscationPanel() {
-  const { jsCode, obfuscatedCode, setObfuscatedCode } = useDevToolsStore();
+  const originalCode = useEditorStore(state => state.originalCode);
+  const currentLanguage = useEditorStore(state => state.currentLanguage);
+  const [obfuscatedCode, setObfuscatedCode] = React.useState('');
   
   const [isObfuscating, setIsObfuscating] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
@@ -43,12 +45,12 @@ export function ObfuscationPanel() {
   });
 
   const handleObfuscate = async () => {
-    if (!JavaScriptObfuscator || !jsCode.trim()) return;
+    if (!JavaScriptObfuscator || !originalCode.trim() || !['javascript', 'typescript'].includes(currentLanguage)) return;
     
     setIsObfuscating(true);
     
     try {
-      const obfuscationResult = JavaScriptObfuscator.obfuscate(jsCode, {
+      const obfuscationResult = JavaScriptObfuscator.obfuscate(originalCode, {
         compact: options.compact,
         controlFlowFlattening: options.controlFlowFlattening,
         controlFlowFlatteningThreshold: 0.75,
@@ -95,9 +97,9 @@ export function ObfuscationPanel() {
   };
 
   const getCompressionInfo = () => {
-    if (!jsCode || !obfuscatedCode) return null;
+    if (!originalCode || !obfuscatedCode) return null;
     
-    const originalSize = jsCode.length;
+    const originalSize = originalCode.length;
     const obfuscatedSize = obfuscatedCode.length;
     const ratio = Math.round((obfuscatedSize / originalSize) * 100);
     
@@ -135,7 +137,7 @@ export function ObfuscationPanel() {
             
             <Button 
               onClick={handleObfuscate}
-              disabled={isObfuscating || !jsCode.trim()}
+              disabled={isObfuscating || !originalCode.trim() || !['javascript', 'typescript'].includes(currentLanguage)}
               className="neumorph-button px-4"
               size="sm"
             >

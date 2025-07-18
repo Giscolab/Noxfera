@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Activity, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
-import useDevToolsStore from '@/stores/useDevToolsStore';
+import useEditorStore from '@/stores/useEditorStore';
 
 // Import dynamique avec fallback pour compatibilité navigateur
 let escomplex: any = null;
@@ -82,23 +82,26 @@ interface ComplexityResult {
 }
 
 export function ComplexityPanel() {
-  const { jsCode, complexityResults, setComplexityResults } = useDevToolsStore();
+  const originalCode = useEditorStore(state => state.originalCode);
+  const currentLanguage = useEditorStore(state => state.currentLanguage);
+  const [complexityResults, setComplexityResults] = React.useState(null);
 
   useEffect(() => {
-    if (!jsCode.trim()) {
+    // Seulement analyser le code JavaScript/TypeScript
+    if (!originalCode.trim() || !['javascript', 'typescript'].includes(currentLanguage)) {
       setComplexityResults(null);
       return;
     }
 
     try {
       // Utilise l'analyse simple comme fallback
-      const analysis = performSimpleComplexityAnalysis(jsCode);
+      const analysis = performSimpleComplexityAnalysis(originalCode);
       setComplexityResults(analysis);
     } catch (error) {
       console.error('Erreur lors de l\'analyse de complexité:', error);
       setComplexityResults(null);
     }
-  }, [jsCode, setComplexityResults]);
+  }, [originalCode, currentLanguage]);
 
   const getComplexityLevel = (cyclomatic: number) => {
     if (cyclomatic <= 5) return { level: 'Simple', color: 'text-success', bg: 'bg-success/10' };

@@ -49,13 +49,14 @@ skills: ["JavaScript", "React", "CSS"]
     setSidebarOpen: (open) => set({ sidebarOpen: open }),
     setShowWelcome: (show) => set({ showWelcome: show }),
     setCurrentTheme: (theme) => set({ currentTheme: theme }),
-    setBeautifyOptions: (options) => set({ 
-      beautifyOptions: { ...get().beautifyOptions, ...options }
-    }),
+    setBeautifyOptions: (options) => set(state => ({ 
+      beautifyOptions: { ...state.beautifyOptions, ...options }
+    })),
     
     // Complex actions
     formatCode: () => {
-      const { originalCode, currentLanguage, beautifyOptions } = get();
+      const state = get();
+      const { originalCode, currentLanguage, beautifyOptions } = state;
       let formatted = originalCode;
       
       try {
