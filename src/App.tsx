@@ -5,13 +5,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { UltimateBeautifierLayout } from "./components/Layout/UltimateBeautifierLayout";
 
 const App = () => (
-  <React.StrictMode>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <UltimateBeautifierLayout />
-    </TooltipProvider>
-  </React.StrictMode>
+  <div>
+    <Toaster />
+    <Sonner />
+    <UltimateBeautifierLayout />
+  </div>
 );
 
 export default App;
