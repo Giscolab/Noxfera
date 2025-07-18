@@ -4,14 +4,53 @@ import { Progress } from "@/components/ui/progress";
 import { Activity, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
 import useDevToolsStore from '@/stores/useDevToolsStore';
 
-// Import dynamique pour éviter les erreurs SSR
+// Import dynamique avec fallback pour compatibilité navigateur
 let escomplex: any = null;
+let isComplexityAvailable = false;
 
-if (typeof window !== 'undefined') {
-  import('escomplex').then(module => {
-    escomplex = module.default || module;
-  });
-}
+// Fallback pour escomplex qui ne marche pas en navigateur
+const performSimpleComplexityAnalysis = (code: string) => {
+  const lines = code.split('\n').filter(line => line.trim());
+  const functions = code.match(/function\s+\w+|const\s+\w+\s*=\s*\([^)]*\)\s*=>/g) || [];
+  const conditionals = code.match(/if\s*\(|else\s*if\s*\(|while\s*\(|for\s*\(/g) || [];
+  const switches = code.match(/switch\s*\(/g) || [];
+  
+  // Calcul basique de complexité cyclomatique : 1 + nombre de points de décision
+  const cyclomaticComplexity = 1 + conditionals.length + switches.length;
+  
+  return {
+    complexity: {
+      cyclomatic: cyclomaticComplexity,
+      sloc: {
+        physical: lines.length,
+        logical: lines.filter(line => 
+          !line.trim().startsWith('//') && 
+          !line.trim().startsWith('/*') && 
+          line.trim() !== ''
+        ).length
+      },
+      halstead: {
+        bugs: Math.round(cyclomaticComplexity * 0.1 * 100) / 100,
+        difficulty: Math.round(cyclomaticComplexity * 1.5 * 100) / 100,
+        effort: cyclomaticComplexity * 100,
+        length: code.length,
+        time: Math.round(cyclomaticComplexity * 5.5 * 100) / 100,
+        vocabulary: new Set(code.match(/\w+/g) || []).size,
+        volume: Math.round(Math.log2(new Set(code.match(/\w+/g) || []).size) * code.length)
+      }
+    },
+    functions: functions.map((func, index) => ({
+      name: func.replace(/function\s+/, '').replace(/const\s+/, '').split(/[=\s(]/)[0] || `Function_${index + 1}`,
+      complexity: {
+        cyclomatic: Math.max(1, Math.floor(cyclomaticComplexity / Math.max(1, functions.length))),
+        sloc: {
+          physical: Math.floor(lines.length / Math.max(1, functions.length)),
+          logical: Math.floor(lines.length / Math.max(1, functions.length))
+        }
+      }
+    }))
+  };
+};
 
 interface ComplexityResult {
   complexity: {
@@ -46,13 +85,14 @@ export function ComplexityPanel() {
   const { jsCode, complexityResults, setComplexityResults } = useDevToolsStore();
 
   useEffect(() => {
-    if (!escomplex || !jsCode.trim()) {
+    if (!jsCode.trim()) {
       setComplexityResults(null);
       return;
     }
 
     try {
-      const analysis = escomplex.analyse(jsCode);
+      // Utilise l'analyse simple comme fallback
+      const analysis = performSimpleComplexityAnalysis(jsCode);
       setComplexityResults(analysis);
     } catch (error) {
       console.error('Erreur lors de l\'analyse de complexité:', error);

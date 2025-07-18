@@ -66,6 +66,28 @@ document.addEventListener('DOMContentLoaded', function() {
   const [activeTab, setActiveTab] = useState('html');
   const [previewKey, setPreviewKey] = useState(0);
 
+  // Synchronisation avec l'éditeur principal
+  useEffect(() => {
+    if (currentLanguage === 'html' && originalCode !== htmlCode) {
+      setHtmlCode(originalCode);
+    } else if (currentLanguage === 'css' && originalCode !== cssCode) {
+      setCssCode(originalCode);
+    } else if (currentLanguage === 'javascript' && originalCode !== jsCode) {
+      setJsCode(originalCode);
+    }
+  }, [originalCode, currentLanguage]);
+
+  // Debounce pour éviter les refreshs trop fréquents
+  const [debouncedHTML, setDebouncedHTML] = useState('');
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedHTML(generatePreviewHTML());
+    }, 300); // 300ms de debounce
+
+    return () => clearTimeout(timer);
+  }, [htmlCode, cssCode, jsCode]);
+
   const generatePreviewHTML = () => {
     return `<!DOCTYPE html>
 <html lang="fr">
@@ -82,12 +104,12 @@ document.addEventListener('DOMContentLoaded', function() {
 </html>`;
   };
   
-  const previewHTML = useMemo(() => {
-    return generatePreviewHTML();
-  }, [htmlCode, cssCode, jsCode]);
+  // Memoization du HTML généré avec debounce
+  const previewHTML = useMemo(() => debouncedHTML, [debouncedHTML]);
 
   const handleRefresh = () => {
     setPreviewKey(prev => prev + 1);
+    setDebouncedHTML(generatePreviewHTML());
   };
 
   const handleOpenExternal = () => {

@@ -92,35 +92,66 @@ skills: ["JavaScript", "React", "CSS"]
     
     detectLanguage: (code) => {
       let language = 'text';
+      const trimmedCode = code.trim().toLowerCase();
       
-      if (code.trim().startsWith('<!DOCTYPE') || code.trim().startsWith('<html')) {
+      // Détection plus précise avec priorités
+      if (trimmedCode.startsWith('<!doctype') || trimmedCode.startsWith('<html')) {
         language = 'html';
-      } else if (code.trim().startsWith('<')) {
+      } else if (trimmedCode.startsWith('<') && trimmedCode.includes('</')) {
         language = 'html';
-      } else if (code.includes('@media') || code.includes('{') && code.includes('}') && code.includes(':')) {
-        if (code.includes('function') || code.includes('const') || code.includes('let')) {
-          language = 'javascript';
-        } else {
-          language = 'css';
-        }
-      } else if (code.trim().startsWith('{') || code.trim().startsWith('[')) {
+      } else if (trimmedCode.startsWith('{') || trimmedCode.startsWith('[')) {
         try {
           JSON.parse(code);
           language = 'json';
         } catch {
+          if (code.includes('function') || code.includes('=>') || code.includes('const')) {
+            language = 'javascript';
+          }
+        }
+      } else if (code.includes('import ') && code.includes('from ')) {
+        if (code.includes('interface ') || code.includes(': string') || code.includes(': number')) {
+          language = 'typescript';
+        } else {
           language = 'javascript';
         }
-      } else if (code.includes('function') || code.includes('const') || code.includes('let') || code.includes('=>')) {
+      } else if (code.includes('def ') || code.includes('import ') && code.includes('print(')) {
+        language = 'python';
+      } else if (code.includes('#include') || code.includes('int main(')) {
+        language = 'cpp';
+      } else if (code.includes('public class') || code.includes('System.out.')) {
+        language = 'java';
+      } else if (code.includes('@media') || code.includes('selector') && code.includes('{')) {
+        language = 'css';
+      } else if (code.includes('function') || code.includes('const ') || code.includes('let ') || code.includes('=>')) {
         language = 'javascript';
-      } else if (code.includes('---') || code.includes('name:') || code.includes('version:')) {
+      } else if (code.includes('---\n') || code.includes('name:') || code.includes('version:')) {
         language = 'yaml';
-      } else if (code.includes('#') && code.includes('\n')) {
+      } else if (code.includes('# ') && code.includes('\n')) {
         language = 'markdown';
+      } else if (code.includes('SELECT ') || code.includes('FROM ') || code.includes('INSERT ')) {
+        language = 'sql';
       }
       
       set({ currentLanguage: language });
       return language;
-    }
+    },
+
+    // Nouveau: Support multilangage
+    supportedLanguages: [
+      { id: 'javascript', name: 'JavaScript', extensions: ['.js', '.jsx'] },
+      { id: 'typescript', name: 'TypeScript', extensions: ['.ts', '.tsx'] },
+      { id: 'html', name: 'HTML', extensions: ['.html', '.htm'] },
+      { id: 'css', name: 'CSS', extensions: ['.css', '.scss', '.sass'] },
+      { id: 'json', name: 'JSON', extensions: ['.json'] },
+      { id: 'python', name: 'Python', extensions: ['.py'] },
+      { id: 'java', name: 'Java', extensions: ['.java'] },
+      { id: 'cpp', name: 'C++', extensions: ['.cpp', '.c', '.h'] },
+      { id: 'yaml', name: 'YAML', extensions: ['.yml', '.yaml'] },
+      { id: 'markdown', name: 'Markdown', extensions: ['.md'] },
+      { id: 'sql', name: 'SQL', extensions: ['.sql'] }
+    ],
+
+    setLanguageManually: (language) => set({ currentLanguage: language })
   }))
 );
 

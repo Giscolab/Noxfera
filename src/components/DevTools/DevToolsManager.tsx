@@ -7,6 +7,7 @@ import { DevConsole } from './DevConsole';
 import { JSHintPanel } from './JSHintPanel';
 import { MinificationPanel } from './MinificationPanel';
 import { ObfuscationPanel } from './ObfuscationPanel';
+import { AdvancedObfuscation } from './AdvancedObfuscation';
 import { ComplexityPanel } from './ComplexityPanel';
 import { 
   Code, 
@@ -16,7 +17,9 @@ import {
   Minimize, 
   Zap, 
   BarChart3,
-  Settings 
+  Settings,
+  Shield,
+  Bug
 } from 'lucide-react';
 
 interface DevToolsManagerProps {
@@ -56,40 +59,47 @@ export function DevToolsManager({ isAdvancedMode }: DevToolsManagerProps) {
         
         <CardContent className="p-0 flex-1">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-            <TabsList className="grid w-full grid-cols-5 bg-background neumorph-flat m-4 mb-0">
+            <TabsList className="grid w-full grid-cols-6 bg-background neumorph-flat m-4 mb-0">
               <TabsTrigger 
                 value="preview" 
-                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-2"
+                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-1 text-xs"
               >
-                <Eye className="w-4 h-4" />
-                <span>Live Preview</span>
+                <Eye className="w-3 h-3" />
+                <span>Preview</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="jshint" 
-                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-2"
+                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-1 text-xs"
               >
-                <CheckCircle className="w-4 h-4" />
+                <Bug className="w-3 h-3" />
                 <span>JSHint</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="minify" 
-                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-2"
+                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-1 text-xs"
               >
-                <Minimize className="w-4 h-4" />
+                <Zap className="w-3 h-3" />
                 <span>Minify</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="obfuscate" 
-                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-2"
+                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-1 text-xs"
               >
-                <Zap className="w-4 h-4" />
-                <span>Obfuscate</span>
+                <Shield className="w-3 h-3" />
+                <span>Basic</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="advanced" 
+                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-1 text-xs"
+              >
+                <Settings className="w-3 h-3" />
+                <span>Advanced</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="complexity" 
-                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-2"
+                className="neumorph-tab data-[state=active]:neumorph-pressed flex items-center gap-1 text-xs"
               >
-                <BarChart3 className="w-4 h-4" />
+                <BarChart3 className="w-3 h-3" />
                 <span>Complexity</span>
               </TabsTrigger>
             </TabsList>
@@ -109,6 +119,10 @@ export function DevToolsManager({ isAdvancedMode }: DevToolsManagerProps) {
               
               <TabsContent value="obfuscate" className="h-full m-0">
                 <ObfuscationPanel />
+              </TabsContent>
+              
+              <TabsContent value="advanced" className="h-full m-0">
+                <AdvancedObfuscation />
               </TabsContent>
               
               <TabsContent value="complexity" className="h-full m-0">

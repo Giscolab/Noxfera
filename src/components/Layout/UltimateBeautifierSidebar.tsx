@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, File, Search, Sparkles, FileText, Code, Braces } from 'lucide-react';
+import { ChevronLeft, ChevronRight, File, Search, Sparkles, FileText, Code, Braces, Download, Copy } from 'lucide-react';
+import { LanguageSelector } from "@/components/DevTools/LanguageSelector";
+import { CodeActions } from "@/components/DevTools/CodeActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -87,6 +89,18 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, advance
 
               <FileExplorer />
             </div>
+          </div>
+
+          {/* Language & Actions */}
+          <div className="p-4 space-y-4 border-t border-border">
+            <h3 className="text-xs uppercase tracking-wide text-muted-foreground mb-3">
+              Langage & Actions
+            </h3>
+            
+            <Card className="p-3 space-y-3">
+              <LanguageSelector />
+              <CodeActions />
+            </Card>
           </div>
 
           {/* Beautify Options Section */}
