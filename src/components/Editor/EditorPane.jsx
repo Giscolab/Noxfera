@@ -184,17 +184,23 @@ const EditorPane = ({ type }) => {
     }
   };
 
-  const getMonacoTheme = (theme) => {
-    const themeMap = {
-      'default': 'vs-dark',
-      'dark': 'vs-dark',
-      'light': 'vs',
-      'dracula': 'vs-dark',
-      'tokyo-night': 'vs-dark',
-      'solarized': 'vs-dark',
-    };
-    return themeMap[theme] || 'vs-dark';
+const getMonacoTheme = (theme: string): string => {
+  const themeMap: Record<string, string> = {
+    default: 'vs-dark',
+    dark: 'vs-dark',
+    light: 'vs',
+    dracula: 'vs-dark',
+    frankenstein: 'vs-dark',
+    mummy: 'vs-dark',
+    werewolf: 'vs-dark',
+    phantom: 'vs-dark',
+    dorian: 'vs-dark',
+    witch: 'vs-dark',
   };
+
+  return themeMap[theme] || 'vs-dark';
+};
+
 
   if (isMinimized) {
     return (

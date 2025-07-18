@@ -91,16 +91,14 @@ export function UltimateBeautifierLayout() {
 
     {/* Header */}
     <header className="header">
-      <div className="logo" aria-label="Logo Ultimate Beautifier">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" fill="currentColor" opacity="0.2"/>
-          <path d="M12 2L22 7V17L12 22L2 17V7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M2 7L12 12L22 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M12 22V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <span>Ultimate Beautifier</span>
+      <div className="logo" aria-label="Logo noxfera">
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 1024 1024">
+  <path d="m356.8 418.1-.3 37.2-18.7 8.1-18.8 8.1v79.2l10.6 4.7c5.9 2.7 14.4 6.6 19 8.7l8.4 3.9v84h72v-41h-35v-74.6l-13.2-5.8c-7.3-3.3-18.2-8.1-24.3-10.8-6-2.8-12.5-5.6-14.4-6.5-1.9-.8-3-1.8-2.5-2.3.9-.9 47.9-21.7 52.6-23.3 1.6-.6 1.8-3.3 2-33.9l.3-33.3 17.3-.3 17.2-.2v-39h-72l-.2 37.1zM588 400.5V420h37v66.6l27.1 12.1c14.9 6.6 26.9 12.4 26.7 12.9-.1.5-12.3 6.2-27 12.8L625 536.3V572c0 19.7-.3 36.5-.6 37.4-.5 1.4-3.1 1.6-18.5 1.6H588v41h72.7l.7-5.3c.3-2.8.6-21.9.6-42.2v-37l11.3-5c6.1-2.7 14-6.2 17.4-7.7l6.1-2.8.7-6.3c.3-3.4.5-21.5.3-40.2l-.3-33.9-3.5-1.8c-1.9-1-9.6-4.5-17-7.9-7.4-3.4-13.8-6.5-14.2-6.8-.4-.4-.8-17.2-.8-37.4l-.1-36.7H588v19.5zm-119 72V487h80v-29h-80v14.5zm0 81V568h80v-29h-80v14.5z"/>
+</svg>
+
+        <span>noxfera</span>
         <div className="text-xs text-muted-foreground font-normal">
-          by <span className="text-primary font-semibold">lovable.dev</span>
+          by <span className="text-primary font-semibold">Giscolab</span>
         </div>
       </div>
       <div className="header-controls flex items-center gap-4">
@@ -130,13 +128,17 @@ export function UltimateBeautifierLayout() {
           >
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="lovable-neumorph">Lovable Light</SelectItem>
-            <SelectItem value="default">Default</SelectItem>
-            <SelectItem value="dracula">Dracula</SelectItem>
-            <SelectItem value="solarized">Solarized</SelectItem>
-            <SelectItem value="tokyo-night">Tokyo Night</SelectItem>
-          </SelectContent>
+	<SelectContent>
+  <SelectItem value="default">Default</SelectItem>
+  <SelectItem value="dracula">Dracula</SelectItem>
+  <SelectItem value="frankenstein">Frankenstein</SelectItem>
+  <SelectItem value="mummy">Mummy</SelectItem>
+  <SelectItem value="werewolf">Werewolf</SelectItem>
+  <SelectItem value="phantom">Phantom</SelectItem>
+  <SelectItem value="dorian">Dorian</SelectItem>
+  <SelectItem value="witch">Witch</SelectItem>
+</SelectContent>
+
         </Select>
 
         <Button 

@@ -1,18 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
 
+/* =============== DESIGN SYSTEM FONDATEUR =============== */
 @layer base {
   :root {
-    /* Lovable.dev Neumorphic Theme - Light Mode Authentique */
     --primary: 262 83% 58%;
-    --primary-dark: 262 83% 50%;
+    --primary-dark: hsl(260.9deg 88.76% 48.82%);
     --secondary: 220 14% 96%;
-    --background: 220 14% 95%;
+    --background: 220 41% 95%;
     --surface: 0 0% 100%;
     --text-primary: 224 71% 4%;
     --text-secondary: 220 9% 46%;
@@ -22,109 +21,140 @@ All colors MUST be HSL.
     --border: 220 13% 91%;
     --highlight: 262 83% 58% / 0.1;
 
-    /* Map to standard variables */
-    --foreground: 224 71% 4%;
-    --card: 220 14% 96%;
-    --card-foreground: 224 71% 4%;
-    --popover: 220 14% 96%;
-    --popover-foreground: 224 71% 4%;
+    --foreground: var(--text-primary);
+    --card: var(--secondary);
+    --card-foreground: var(--text-primary);
+    --popover: var(--secondary);
+    --popover-foreground: var(--text-primary);
     --primary-foreground: 210 20% 98%;
-    --secondary-foreground: 220 9% 46%;
+    --secondary-foreground: var(--text-secondary);
     --muted: 220 14% 93%;
-    --muted-foreground: 220 9% 46%;
+    --muted-foreground: var(--text-secondary);
     --accent: 220 14% 97%;
-    --accent-foreground: 220 9% 46%;
-    --destructive: 0 84% 60%;
+    --accent-foreground: var(--text-secondary);
+    --destructive: var(--error);
     --destructive-foreground: 210 20% 98%;
-    --input: 220 13% 91%;
-    --ring: 262 83% 58%;
+    --input: var(--border);
+    --ring: var(--primary);
     --radius: 0.75rem;
 
-    /* Sidebar variables */
-    --sidebar-background: 220 14% 96%;
-    --sidebar-foreground: 224 71% 4%;
-    --sidebar-primary: 262 83% 58%;
-    --sidebar-primary-foreground: 210 20% 98%;
-    --sidebar-accent: 220 14% 93%;
-    --sidebar-accent-foreground: 220 9% 46%;
-    --sidebar-border: 220 13% 88%;
-    --sidebar-ring: 262 83% 58%;
-
-    /* Variables neumorphiques authentiques */
     --neumorph-distance: 12px;
     --neumorph-intensity: 0.15;
     --neumorph-blur: 24px;
-    --neumorph-light: 220 50% 98%;
+    --neumorph-light: 224 41% 81%;
     --neumorph-dark: 220 14% 82%;
-    
-    /* Ombres neumorphiques */
+
     --neumorph-shadow-light: calc(-1 * var(--neumorph-distance)) calc(-1 * var(--neumorph-distance)) var(--neumorph-blur) hsl(var(--neumorph-light) / var(--neumorph-intensity));
     --neumorph-shadow-dark: var(--neumorph-distance) var(--neumorph-distance) var(--neumorph-blur) hsl(var(--neumorph-dark) / var(--neumorph-intensity));
-    --neumorph-inset-light: inset calc(-1 * var(--neumorph-distance)) calc(-1 * var(--neumorph-distance)) var(--neumorph-blur) hsl(var(--neumorph-light) / var(--neumorph-intensity));
-    --neumorph-inset-dark: inset var(--neumorph-distance) var(--neumorph-distance) var(--neumorph-blur) hsl(var(--neumorph-dark) / var(--neumorph-intensity));
+
+  --white: hsl(0deg 0% 100%);
+  --greyLight-1: hsl(215.29deg 45.95% 92.75%);
+  --greyLight-2: hsl(224.52deg 39.24% 84.51%);
+  --greyLight-3: hsl(224.21deg 41.3% 81.96%);
+  --greyDark: hsl(222.69deg 35.14% 70.98%);
   }
 
-  /* Dracula Theme */
-  .dracula {
-    --primary: 265 89% 78%;
-    --primary-dark: 265 85% 70%;
-    --background: 231 15% 18%;
-    --surface: 232 14% 31%;
-    --text-primary: 60 30% 96%;
-    --text-secondary: 225 27% 51%;
-    --card: 232 14% 31%;
-    --sidebar-background: 232 14% 31%;
-    --sidebar-accent: 231 15% 18%;
-  }
-
-  /* Solarized Theme */
-  .solarized {
-    --primary: 45 100% 35%;
-    --primary-dark: 45 100% 27%;
-    --background: 192 100% 11%;
-    --surface: 193 100% 18%;
-    --text-primary: 186 8% 60%;
-    --text-secondary: 186 13% 49%;
-    --card: 193 100% 18%;
-    --sidebar-background: 193 100% 18%;
-    --sidebar-accent: 192 100% 11%;
-  }
-
-  /* Tokyo Night Theme */
-  .tokyo-night {
-    --primary: 217 92% 76%;
-    --primary-dark: 217 92% 68%;
-    --background: 222 16% 16%;
-    --surface: 223 14% 20%;
-    --text-primary: 224 71% 79%;
-    --text-secondary: 225 15% 57%;
-    --card: 223 14% 20%;
-    --sidebar-background: 223 14% 20%;
-    --sidebar-accent: 222 16% 16%;
-  }
+/* Dracula */
+.dracula {
+  --primary: hsl(265, 89%, 78%);
+  --primary-dark: hsl(265, 31%, 52%);
+  --background: hsl(231, 15%, 18%);
+  --surface: hsl(225, 27%, 22%);
+  --card: var(--surface);
+  --text-primary: hsl(60, 30%, 96%);
+  --text-secondary: hsl(225, 14%, 64%);
+  --neumorph-light: hsl(231, 13%, 24%);
+  --neumorph-dark: hsl(231, 16%, 14%);
 }
 
-@layer base {
+/* Frankenstein */
+.frankenstein {
+  --primary: hsl(120, 73%, 75%);
+  --primary-dark: hsl(120, 25%, 35%);
+  --background: hsl(0, 0%, 15%);
+  --surface: hsl(0, 0%, 25%);
+  --card: var(--surface);
+  --text-primary: hsl(60, 30%, 90%);
+  --text-secondary: hsl(120, 10%, 65%);
+  --neumorph-light: hsl(0, 0%, 20%);
+  --neumorph-dark: hsl(0, 0%, 10%);
+}
+
+/* Momie */
+.mummy {
+  --primary: hsl(45, 100%, 60%);
+  --primary-dark: hsl(30, 70%, 40%);
+  --background: hsl(30, 30%, 12%);
+  --surface: hsl(30, 25%, 20%);
+  --card: var(--surface);
+  --text-primary: hsl(45, 40%, 90%);
+  --text-secondary: hsl(30, 20%, 65%);
+  --neumorph-light: hsl(30, 25%, 17%);
+  --neumorph-dark: hsl(30, 35%, 7%);
+}
+
+/* Loup-Garou */
+.werewolf {
+  --primary: hsl(200, 15%, 80%);
+  --primary-dark: hsl(200, 25%, 40%);
+  --background: hsl(100, 10%, 10%);
+  --surface: hsl(100, 8%, 15%);
+  --card: var(--surface);
+  --text-primary: hsl(60, 10%, 85%);
+  --text-secondary: hsl(100, 10%, 65%);
+  --neumorph-light: hsl(100, 9%, 13%);
+  --neumorph-dark: hsl(100, 11%, 7%);
+}
+
+/* Fantôme de l'Opéra */
+.phantom {
+  --primary: hsl(290, 50%, 60%);
+  --primary-dark: hsl(290, 30%, 35%);
+  --background: hsl(0, 0%, 8%);
+  --surface: hsl(290, 10%, 15%);
+  --card: var(--surface);
+  --text-primary: hsl(50, 40%, 90%);
+  --text-secondary: hsl(290, 15%, 65%);
+  --neumorph-light: hsl(290, 9%, 11%);
+  --neumorph-dark: hsl(290, 11%, 5%);
+}
+
+/* Dorian Gray */
+.dorian {
+  --primary: hsl(35, 60%, 65%);
+  --primary-dark: hsl(35, 40%, 45%);
+  --background: hsl(35, 30%, 15%);
+  --surface: hsl(35, 25%, 25%);
+  --card: var(--surface);
+  --text-primary: hsl(35, 30%, 90%);
+  --text-secondary: hsl(35, 20%, 65%);
+  --neumorph-light: hsl(35, 25%, 20%);
+  --neumorph-dark: hsl(35, 35%, 10%);
+}
+
+/* Sorcière */
+.witch {
+  --primary: hsl(330, 80%, 65%);
+  --primary-dark: hsl(270, 50%, 45%);
+  --background: hsl(60, 10%, 12%);
+  --surface: hsl(60, 15%, 18%);
+  --card: var(--surface);
+  --text-primary: hsl(60, 40%, 90%);
+  --text-secondary: hsl(330, 20%, 65%);
+  --neumorph-light: hsl(60, 12%, 15%);
+  --neumorph-dark: hsl(60, 8%, 9%);
+}
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
+    font-family: 'Manrope', sans-serif;
+    font-feature-settings: 'ss01', 'ss02', 'cv01', 'cv03';
     overflow: hidden;
   }
 
-/* Styles du Monaco Editor */
-.monaco-editor {
-  text-size-adjust: 100%; /* Supporté par Chrome 54+, Edge 79+, Firefox */
-  -webkit-text-size-adjust: 100%; /* Support Safari/anciens Chrome */
-  @apply rounded-lg bg-background min-h-[300px]; /* Arrondi + fond + hauteur min */
-}
-
-
-  /* File Icons */
   .file-icon.html { color: #e34c26; }
   .file-icon.css { color: #2965f1; }
   .file-icon.javascript, .file-icon.json { color: #f0db4f; }
@@ -132,73 +162,23 @@ All colors MUST be HSL.
   .file-icon.python { color: #3572A5; }
   .file-icon.markdown { color: #083fa1; }
 
-  /* Custom scrollbars */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-muted/20;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-primary/60 rounded-full;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary/80;
-  }
-
-  /* Animations */
   @keyframes fade-in {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  
+
   @keyframes slide-in-right {
     from { transform: translateX(100%); }
     to { transform: translateX(0); }
   }
 
   @keyframes pulse-glow {
-    0%, 100% { 
-      opacity: 0.5;
-      transform: scale(1);
-    }
-    50% { 
-      opacity: 0.8;
-      transform: scale(1.05);
-    }
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
   }
+}
 
-  .animate-fade-in {
-    animation: fade-in 0.3s ease-out;
-  }
-  
-  .animate-slide-in-right {
-    animation: slide-in-right 0.3s ease-out;
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  /* Welcome overlay */
-  .welcome-overlay {
-    @apply fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center;
-  }
-
-  /* Drag area */
-  .drag-area {
-    @apply fixed inset-0 bg-primary/20 border-4 border-dashed border-primary z-40 opacity-0 pointer-events-none transition-opacity duration-300;
-  }
-  
-  .drag-area.active {
-    @apply opacity-100 pointer-events-auto;
-  }
-
-  /* Layout Grid */
+@layer components {
   .app-grid {
     display: grid;
     grid-template-columns: 320px 1fr;
@@ -212,18 +192,40 @@ All colors MUST be HSL.
     padding: 16px;
   }
 
+  .app-grid.sidebar-collapsed {
+    grid-template-columns: 80px 1fr;
+  }
+
   .header {
     grid-area: header;
     @apply bg-card flex items-center justify-between px-8 rounded-xl;
-    box-shadow: 
-      8px 8px 16px hsl(var(--neumorph-shadow-dark)), 
+    box-shadow:
+      8px 8px 16px hsl(var(--neumorph-shadow-dark)),
       -8px -8px 16px hsl(var(--neumorph-shadow-light));
     border: 1px solid hsl(var(--border));
   }
 
-  .logo {
-    @apply text-primary font-bold text-xl flex items-center gap-3;
-    font-feature-settings: 'ss01' on;
+  .footer {
+    grid-area: footer;
+    @apply bg-card flex items-center justify-between px-8 text-sm text-muted-foreground rounded-xl;
+    box-shadow:
+      4px 4px 8px hsl(var(--neumorph-shadow-dark)),
+      -4px -4px 8px hsl(var(--neumorph-shadow-light));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .sidebar {
+    grid-area: sidebar;
+    @apply bg-card py-6 flex flex-col rounded-xl;
+    box-shadow:
+      calc(var(--neumorph-distance) * 2)
+      calc(var(--neumorph-distance) * 2)
+      calc(var(--neumorph-blur) * 2)
+      hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) * 1.5)),
+      calc(-1 * var(--neumorph-distance) * 2)
+      calc(-1 * var(--neumorph-distance) * 2)
+      calc(var(--neumorph-blur) * 2)
+      hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) * 1.5));
   }
 
   .main-content {
@@ -234,153 +236,28 @@ All colors MUST be HSL.
     grid-template-rows: auto 1fr;
     gap: 16px;
   }
+}
 
-  .footer {
-    grid-area: footer;
-    @apply bg-card flex items-center justify-between px-8 text-sm text-muted-foreground rounded-xl;
-    box-shadow: 
-      4px 4px 8px hsl(var(--neumorph-shadow-dark)), 
-      -4px -4px 8px hsl(var(--neumorph-shadow-light));
-    border: 1px solid hsl(var(--border));
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
   }
 
-  .app-grid.sidebar-collapsed {
-    grid-template-columns: 80px 1fr;
+  .animate-slide-in-right {
+    animation: slide-in-right 0.3s ease-out;
   }
 
-  /* Classes neumorphiques authentiques */
-  .neumorph-raised {
-    @apply bg-card border border-border/30 rounded-xl transition-all duration-300;
-    box-shadow: 
-      var(--neumorph-shadow-dark), 
-      var(--neumorph-shadow-light);
-    background: linear-gradient(145deg, 
-      hsl(var(--neumorph-light) / 0.8), 
-      hsl(var(--neumorph-dark) / 0.1));
-  }
-  
-  .neumorph-pressed {
-    @apply bg-card border border-border/30 rounded-xl;
-    box-shadow: 
-      var(--neumorph-inset-dark), 
-      var(--neumorph-inset-light);
-    background: linear-gradient(145deg, 
-      hsl(var(--neumorph-dark) / 0.1), 
-      hsl(var(--neumorph-light) / 0.8));
-  }
-  
-  .neumorph-flat {
-    @apply bg-background border border-border/20 rounded-xl;
-    box-shadow: 
-      calc(var(--neumorph-distance) / 2) calc(var(--neumorph-distance) / 2) calc(var(--neumorph-blur) / 2) hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) / 2)), 
-      calc(-1 * var(--neumorph-distance) / 2) calc(-1 * var(--neumorph-distance) / 2) calc(var(--neumorph-blur) / 2) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) / 2));
-  }
-  
-  .neumorph-panel {
-    @apply bg-card border border-border/20 rounded-2xl;
-    box-shadow: 
-      calc(var(--neumorph-distance) * 1.5) calc(var(--neumorph-distance) * 1.5) calc(var(--neumorph-blur) * 1.5) hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) * 1.2)), 
-      calc(-1 * var(--neumorph-distance) * 1.5) calc(-1 * var(--neumorph-distance) * 1.5) calc(var(--neumorph-blur) * 1.5) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) * 1.2));
-    background: linear-gradient(145deg, 
-      hsl(var(--background)), 
-      hsl(var(--muted)));
-  }
-  
-  .neumorph-inset {
-    @apply bg-muted border border-border/30 rounded-xl;
-    box-shadow: 
-      var(--neumorph-inset-dark), 
-      var(--neumorph-inset-light);
-    background: linear-gradient(145deg, 
-      hsl(var(--muted)), 
-      hsl(var(--background)));
-  }
-  
-  .neumorph-button {
-    @apply bg-card border border-border/20 rounded-xl transition-all duration-300 cursor-pointer;
-    box-shadow: 
-      calc(var(--neumorph-distance) * 0.8) calc(var(--neumorph-distance) * 0.8) calc(var(--neumorph-blur) * 0.8) hsl(var(--neumorph-dark) / var(--neumorph-intensity)), 
-      calc(-1 * var(--neumorph-distance) * 0.8) calc(-1 * var(--neumorph-distance) * 0.8) calc(var(--neumorph-blur) * 0.8) hsl(var(--neumorph-light) / var(--neumorph-intensity));
-    background: linear-gradient(145deg, 
-      hsl(var(--background)), 
-      hsl(var(--muted) / 0.5));
-  }
-  
-  .neumorph-button:hover {
-    box-shadow: 
-      calc(var(--neumorph-distance) * 1.2) calc(var(--neumorph-distance) * 1.2) calc(var(--neumorph-blur) * 1.2) hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) * 1.2)), 
-      calc(-1 * var(--neumorph-distance) * 1.2) calc(-1 * var(--neumorph-distance) * 1.2) calc(var(--neumorph-blur) * 1.2) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) * 1.2));
-    transform: translateY(-2px);
-    background: linear-gradient(145deg, 
-      hsl(var(--accent)), 
-      hsl(var(--background)));
-  }
-  
-  .neumorph-button:active {
-    box-shadow: 
-      var(--neumorph-inset-dark), 
-      var(--neumorph-inset-light);
-    transform: translateY(1px);
-    background: linear-gradient(145deg, 
-      hsl(var(--muted)), 
-      hsl(var(--accent)));
-  }
-  
-  /* Classes spécialisées pour les dev tools */
-  .neumorph-floating {
-    @apply bg-card/95 border border-border/40 rounded-2xl backdrop-blur-xl;
-    box-shadow: 
-      0 8px 32px hsl(var(--neumorph-dark) / 0.2),
-      0 -2px 16px hsl(var(--neumorph-light) / 0.8),
-      inset 0 1px 2px hsl(var(--neumorph-light) / 0.9);
-    background: linear-gradient(145deg, 
-      hsl(var(--card) / 0.95), 
-      hsl(var(--background) / 0.9));
-  }
-  
-  .neumorph-glass {
-    @apply bg-background/90 border border-border/30 rounded-xl backdrop-blur-2xl;
-    box-shadow: 
-      0 8px 32px hsl(var(--neumorph-dark) / 0.1),
-      inset 0 1px 0 hsl(var(--neumorph-light) / 0.9);
-  }
-  
-  .neumorph-tab {
-    @apply bg-card border border-border/30 rounded-t-xl transition-all duration-200;
-    box-shadow: 
-      calc(var(--neumorph-distance) * 0.5) calc(var(--neumorph-distance) * 0.5) calc(var(--neumorph-blur) * 0.5) hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) * 0.8)), 
-      calc(-1 * var(--neumorph-distance) * 0.5) calc(-1 * var(--neumorph-distance) * 0.5) calc(var(--neumorph-blur) * 0.5) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) * 0.8));
-  }
-  
-  
-  /* Classes spécialisées pour les toggles neumorphiques */
-  .neumorph-toggle {
-    @apply p-1 rounded-xl;
-    background: linear-gradient(145deg, 
-      hsl(var(--background)), 
-      hsl(var(--muted)));
-    box-shadow: 
-      inset calc(var(--neumorph-distance) * 0.5) calc(var(--neumorph-distance) * 0.5) calc(var(--neumorph-blur) * 0.5) hsl(var(--neumorph-dark) / calc(var(--neumorph-intensity) * 0.5)), 
-      inset calc(-1 * var(--neumorph-distance) * 0.5) calc(-1 * var(--neumorph-distance) * 0.5) calc(var(--neumorph-blur) * 0.5) hsl(var(--neumorph-light) / calc(var(--neumorph-intensity) * 0.5));
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 
-  .neumorph-tab.active {
-    @apply bg-accent;
-    box-shadow: 
-      var(--neumorph-inset-dark), 
-      var(--neumorph-inset-light);
-    background: linear-gradient(145deg, 
-      hsl(var(--accent)), 
-      hsl(var(--background)));
+  .shadow-neu {
+    box-shadow: var(--neumorph-shadow-dark), var(--neumorph-shadow-light);
   }
 
-  @media (max-width: 900px) {
-    .app-grid {
-      grid-template-columns: 1fr;
-      grid-template-areas:
-        "header"
-        "main"
-        "footer";
-    }
+  .shadow-neu-inset {
+    box-shadow:
+      inset var(--neumorph-distance) var(--neumorph-distance) var(--neumorph-blur) hsl(var(--neumorph-dark) / var(--neumorph-intensity)),
+      inset calc(-1 * var(--neumorph-distance)) calc(-1 * var(--neumorph-distance)) var(--neumorph-blur) hsl(var(--neumorph-light) / var(--neumorph-intensity));
   }
 }

@@ -12,7 +12,7 @@ const SimpleLayout = () => {
           <div className="flex items-center justify-center gap-3">
             <Sparkles className="h-8 w-8 text-primary animate-pulse" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Ultimate Beautifier
+              noxfera
             </h1>
           </div>
           <p className="text-muted-foreground text-lg">
@@ -33,7 +33,7 @@ const SimpleLayout = () => {
               <textarea
                 className="w-full h-96 p-4 font-mono text-sm bg-muted rounded-md border border-border"
                 placeholder="Paste your code here..."
-                defaultValue={`// Welcome to Ultimate Beautifier!
+                defaultValue={`// Welcome to noxfera!
 function example(){
 console.log("Hello World");
 const data={name:"test",value:123};
@@ -55,7 +55,7 @@ return data;
                 className="w-full h-96 p-4 font-mono text-sm bg-muted rounded-md border border-border"
                 placeholder="Formatted code will appear here..."
                 readOnly
-                value={`// Welcome to Ultimate Beautifier!
+                value={`// Welcome to noxfera!
 function example() {
   console.log("Hello World");
   const data = {

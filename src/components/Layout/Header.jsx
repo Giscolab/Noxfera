@@ -23,8 +23,12 @@ const Header = () => {
     { value: 'dark', label: 'Dark', icon: Moon },
     { value: 'light', label: 'Light', icon: Sun },
     { value: 'dracula', label: 'Dracula', icon: Moon },
-    { value: 'tokyo-night', label: 'Tokyo Night', icon: Moon },
-    { value: 'solarized', label: 'Solarized', icon: Sun },
+    { value: 'frankenstein', label: 'frankenstein', icon: Sun },
+	{ value: 'mummy', label: 'mummy', icon: Moon },
+	{ value: 'werewolf', label: 'Werewolf', icon: Moon },
+	{ value: 'phantom', label: 'Phantom', icon: Moon },
+	{ value: 'dorian', label: 'Dorian Gray', icon: Sun },
+	{ value: 'witch', label: 'Witch', icon: Sun },
   ];
 
   const handleFormatCode = () => {
@@ -42,7 +46,7 @@ const Header = () => {
             <div className="absolute inset-0 bg-primary/20 rounded-full blur-md"></div>
           </div>
           <div className="flex flex-col">
-            <h1 className="text-lg font-bold text-primary">Ultimate Beautifier</h1>
+            <h1 className="text-lg font-bold text-primary">noxfera</h1>
             <span className="text-xs text-muted-foreground hidden md:block">
               Professional Code Formatter
             </span>

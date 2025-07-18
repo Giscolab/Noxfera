@@ -4,7 +4,7 @@ import { subscribeWithSelector } from 'zustand/middleware';
 const useEditorStore = create(
   subscribeWithSelector((set, get) => ({
     // Editor state
-    originalCode: `// Welcome to Ultimate Beautifier!
+    originalCode: `// Welcome to noxfera!
 // Paste your code here or drag & drop files
 function helloWorld() {
 console.log("Hello, world!");

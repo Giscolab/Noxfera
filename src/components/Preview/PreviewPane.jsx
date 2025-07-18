@@ -289,7 +289,7 @@ const DiffViewer = ({ original, formatted, stats }) => {
 
 const ConsoleOutput = () => {
   const [logs, setLogs] = React.useState([
-    { type: 'info', message: 'Ultimate Beautifier initialized', timestamp: Date.now() },
+    { type: 'info', message: 'noxfera initialized', timestamp: Date.now() },
     { type: 'success', message: 'Code formatting engine ready', timestamp: Date.now() + 1000 },
   ]);
 

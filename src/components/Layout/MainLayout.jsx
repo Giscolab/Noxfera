@@ -60,7 +60,7 @@ const MainLayout = () => {
         {/* Footer */}
         <footer className="col-span-full bg-surface border-t border-border px-6 py-2 flex items-center justify-between text-sm text-muted-foreground">
           <div className="flex items-center gap-4">
-            <StatusItem icon="💻" text="Ultimate Beautifier" />
+            <StatusItem icon="💻" text="noxfera" />
             <StatusItem icon="🎯" text="Ready" />
           </div>
           <div className="flex items-center gap-4">

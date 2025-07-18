@@ -106,7 +106,7 @@ console.log('Date du jour:', formatDate(new Date()));`
         <CardHeader className="text-center pb-4">
           <CardTitle className="text-3xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
             <Sparkles className="w-8 h-8" />
-            Ultimate Beautifier
+            noxfera
           </CardTitle>
           <p className="text-muted-foreground text-lg leading-relaxed">
             Formatez votre code instantanément avec une interface élégante et intuitive.
