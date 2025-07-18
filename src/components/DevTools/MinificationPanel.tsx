@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MonacoEditor } from '../Editor/MonacoEditor';
 import { Minimize2, Download, Copy, FileText } from 'lucide-react';
-import useDevToolsStore from '@/stores/useDevToolsStore';
+import useEditorStore from '@/stores/useEditorStore';
+import { useDevConsole } from './DevConsole';
 
 // Minification CSS simple (intégrée)
 const minifyCSS = (css: string): string => {
@@ -28,51 +29,101 @@ const minifyHTML = (html: string): string => {
     .trim();
 };
 
+// Minification JS simple
+const minifyJS = (js: string): string => {
+  return js
+    .replace(/\/\*[\s\S]*?\*\//g, '') // Supprimer commentaires multi-lignes
+    .replace(/\/\/.*$/gm, '') // Supprimer commentaires single-line
+    .replace(/\s+/g, ' ') // Remplacer multiples espaces
+    .replace(/;\s*}/g, '}') // Optimiser ; avant }
+    .trim();
+};
+
 export function MinificationPanel() {
-  const { 
-    htmlCode, 
-    cssCode, 
-    jsCode, 
-    minifiedCode, 
-    setMinifiedCode 
-  } = useDevToolsStore();
+  const { originalCode, currentLanguage } = useEditorStore();
+  const { addMessage } = useDevConsole();
 
   const [isMinifying, setIsMinifying] = useState(false);
-  const [activeTab, setActiveTab] = useState('html');
+  const [activeTab, setActiveTab] = useState('javascript');
+  
+  const [originalCodes, setOriginalCodes] = useState({
+    html: `<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Page d'exemple</title>
+</head>
+<body>
+    <h1>Titre principal</h1>
+    <p>Ceci est un paragraphe d'exemple.</p>
+</body>
+</html>`,
+    css: `/* Styles pour le bouton */
+.button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #2980b9;
+}`,
+    javascript: originalCode || `function calculateSum(a, b) {
+    // Cette fonction calcule la somme de deux nombres
+    const result = a + b;
+    console.log('Résultat:', result);
+    return result;
+}`
+  });
+
+  const [minifiedCodes, setMinifiedCodes] = useState({
+    html: '',
+    css: '',
+    javascript: ''
+  });
+
+  // Synchroniser avec l'éditeur principal
+  useEffect(() => {
+    if (originalCode && ['javascript', 'css', 'html'].includes(currentLanguage)) {
+      setOriginalCodes(prev => ({
+        ...prev,
+        [currentLanguage]: originalCode
+      }));
+      setActiveTab(currentLanguage);
+    }
+  }, [originalCode, currentLanguage]);
 
   const handleMinifyAll = async () => {
     setIsMinifying(true);
+    addMessage('info', 'Minifier', 'Début de la minification...');
     
     try {
-      let minifiedHTML = htmlCode.trim() ? minifyHTML(htmlCode) : htmlCode;
-      let minifiedCSS = cssCode.trim() ? minifyCSS(cssCode) : cssCode;
-      let minifiedJS = jsCode;
+      const minifiedHTML = originalCodes.html.trim() ? minifyHTML(originalCodes.html) : originalCodes.html;
+      const minifiedCSS = originalCodes.css.trim() ? minifyCSS(originalCodes.css) : originalCodes.css;
+      const minifiedJS = originalCodes.javascript.trim() ? minifyJS(originalCodes.javascript) : originalCodes.javascript;
 
-      // Minification JS basique (sans terser pour éviter les erreurs)
-      if (jsCode.trim()) {
-        minifiedJS = jsCode
-          .replace(/\/\*[\s\S]*?\*\//g, '') // Supprimer commentaires multi-lignes
-          .replace(/\/\/.*$/gm, '') // Supprimer commentaires single-line
-          .replace(/\s+/g, ' ') // Remplacer multiples espaces
-          .replace(/;\s*}/g, '}') // Optimiser ; avant }
-          .trim();
-      }
-
-      setMinifiedCode({
+      setMinifiedCodes({
         html: minifiedHTML,
         css: minifiedCSS,
-        js: minifiedJS
+        javascript: minifiedJS
       });
 
-      // Log dans la console de dev
-      if ((window as any).devConsole) {
-        (window as any).devConsole.addMessage('success', 'Minification', 'Code minifié avec succès');
-      }
+      // Calculer les statistiques
+      const htmlReduction = originalCodes.html.length > 0 ? 
+        Math.round((1 - minifiedHTML.length / originalCodes.html.length) * 100) : 0;
+      const cssReduction = originalCodes.css.length > 0 ? 
+        Math.round((1 - minifiedCSS.length / originalCodes.css.length) * 100) : 0;
+      const jsReduction = originalCodes.javascript.length > 0 ? 
+        Math.round((1 - minifiedJS.length / originalCodes.javascript.length) * 100) : 0;
+
+      addMessage('success', 'Minifier', 
+        `Minification réussie! HTML: -${htmlReduction}%, CSS: -${cssReduction}%, JS: -${jsReduction}%`);
     } catch (error) {
       console.error('Erreur lors de la minification:', error);
-      if ((window as any).devConsole) {
-        (window as any).devConsole.addMessage('error', 'Minification', 'Erreur lors de la minification');
-      }
+      addMessage('error', 'Minifier', `Erreur: ${error.message}`);
     }
     
     setIsMinifying(false);
@@ -80,11 +131,12 @@ export function MinificationPanel() {
 
   const handleCopy = (code: string) => {
     navigator.clipboard.writeText(code);
+    addMessage('success', 'Minifier', 'Code minifié copié dans le presse-papier');
   };
 
   const handleDownload = (code: string, type: string) => {
-    const extension = type === 'js' ? 'js' : type === 'css' ? 'css' : 'html';
-    const mimeType = type === 'js' ? 'application/javascript' : 
+    const extension = type === 'javascript' ? 'js' : type;
+    const mimeType = type === 'javascript' ? 'application/javascript' : 
                      type === 'css' ? 'text/css' : 
                      'text/html';
     
@@ -97,24 +149,15 @@ export function MinificationPanel() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    addMessage('success', 'Minifier', `Fichier téléchargé: minified.${extension}`);
   };
 
   const getCurrentCode = () => {
-    switch (activeTab) {
-      case 'html': return minifiedCode.html;
-      case 'css': return minifiedCode.css;
-      case 'js': return minifiedCode.js;
-      default: return '';
-    }
+    return minifiedCodes[activeTab];
   };
 
   const getOriginalSize = () => {
-    switch (activeTab) {
-      case 'html': return htmlCode.length;
-      case 'css': return cssCode.length;
-      case 'js': return jsCode.length;
-      default: return 0;
-    }
+    return originalCodes[activeTab].length;
   };
 
   const getMinifiedSize = () => {
@@ -133,18 +176,18 @@ export function MinificationPanel() {
     switch (activeTab) {
       case 'html': return 'html';
       case 'css': return 'css';
-      case 'js': return 'javascript';
+      case 'javascript': return 'javascript';
       default: return 'html';
     }
   };
 
   return (
-    <Card className="neumorph-floating">
-      <CardHeader className="p-4 border-b border-border/30">
+    <Card className="neumorph-panel h-full flex flex-col">
+      <CardHeader className="p-4 bg-muted/30 rounded-t-2xl border-b border-border/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Minimize2 className="w-5 h-5 text-primary" />
-            <h3 className="text-sm font-semibold">Minification de Code</h3>
+            <h3 className="text-lg font-semibold">Minification de Code</h3>
           </div>
           
           <Button 
@@ -158,13 +201,13 @@ export function MinificationPanel() {
         </div>
       </CardHeader>
       
-      <CardContent className="p-4">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <CardContent className="p-4 flex-1 flex flex-col">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <TabsList className="grid w-auto grid-cols-3 bg-background neumorph-flat">
               <TabsTrigger value="html" className="neumorph-tab data-[state=active]:neumorph-pressed">HTML</TabsTrigger>
               <TabsTrigger value="css" className="neumorph-tab data-[state=active]:neumorph-pressed">CSS</TabsTrigger>
-              <TabsTrigger value="js" className="neumorph-tab data-[state=active]:neumorph-pressed">JS</TabsTrigger>
+              <TabsTrigger value="javascript" className="neumorph-tab data-[state=active]:neumorph-pressed">JS</TabsTrigger>
             </TabsList>
             
             <div className="flex items-center gap-2">
@@ -198,8 +241,8 @@ export function MinificationPanel() {
             </div>
           </div>
 
-          <TabsContent value={activeTab} className="mt-0">
-            <div className="h-64 neumorph-inset rounded-xl overflow-hidden">
+          <TabsContent value={activeTab} className="mt-0 flex-1">
+            <div className="h-full neumorph-inset rounded-xl overflow-hidden">
               {getCurrentCode() ? (
                 <MonacoEditor
                   value={getCurrentCode()}
@@ -212,6 +255,7 @@ export function MinificationPanel() {
                   <div className="text-center">
                     <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
                     <p className="text-sm">Cliquez sur "Minifier Tout" pour commencer</p>
+                    <p className="text-xs mt-1">Le code minifié apparaîtra ici</p>
                   </div>
                 </div>
               )}

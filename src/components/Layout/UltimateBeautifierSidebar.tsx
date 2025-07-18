@@ -14,9 +14,11 @@ import useFileStore from '@/stores/useFileStore';
 interface UltimateBeautifierSidebarProps {
   collapsed: boolean;
   onToggleCollapse: () => void;
+  advancedMode: boolean;
+  onAdvancedModeChange: (mode: boolean) => void;
 }
 
-export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse }: UltimateBeautifierSidebarProps) {
+export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, advancedMode, onAdvancedModeChange }: UltimateBeautifierSidebarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   
   const { 
@@ -27,7 +29,7 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse }: Ultim
   
   const { files } = useFileStore();
   
-  const [advancedMode, setAdvancedMode] = useState(false);
+  
   
   const [indentSize, setIndentSize] = useState([beautifyOptions.indent_size]);
   const [braceStyle, setBraceStyle] = useState(beautifyOptions.brace_style);
@@ -162,7 +164,7 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse }: Ultim
                 <div className="neumorph-toggle">
                   <Switch
                     checked={advancedMode}
-                    onCheckedChange={setAdvancedMode}
+                    onCheckedChange={onAdvancedModeChange}
                     aria-label="Activer le mode avancé"
                     className="data-[state=checked]:bg-primary"
                   />

@@ -4,25 +4,87 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { MonacoEditor } from '../Editor/MonacoEditor';
 import { RefreshCw, ExternalLink, Code, Eye } from 'lucide-react';
-import useDevToolsStore from '@/stores/useDevToolsStore';
+import useEditorStore from '@/stores/useEditorStore';
 
 export function LivePreview() {
-  const {
-    htmlCode,
-    cssCode,
-    jsCode,
-    setHtmlCode,
-    setCssCode,
-    setJsCode,
-    generatePreviewHTML
-  } = useDevToolsStore();
+  const { originalCode, currentLanguage } = useEditorStore();
+  
+  const [htmlCode, setHtmlCode] = useState(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Preview</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <p>Bienvenue dans l'aperçu live !</p>
+</body>
+</html>`);
+  
+  const [cssCode, setCssCode] = useState(`body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+p {
+    text-align: center;
+    font-size: 1.2rem;
+    opacity: 0.9;
+}`);
+  
+  const [jsCode, setJsCode] = useState(`console.log('Live Preview initialisé !');
+
+// Animation simple
+document.addEventListener('DOMContentLoaded', function() {
+    const title = document.querySelector('h1');
+    if (title) {
+        title.style.opacity = '0';
+        title.style.transform = 'translateY(-20px)';
+        title.style.transition = 'all 0.5s ease';
+        
+        setTimeout(() => {
+            title.style.opacity = '1';
+            title.style.transform = 'translateY(0)';
+        }, 100);
+    }
+});`);
 
   const [activeTab, setActiveTab] = useState('html');
   const [previewKey, setPreviewKey] = useState(0);
 
+  const generatePreviewHTML = () => {
+    return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Preview</title>
+    <style>${cssCode}</style>
+</head>
+<body>
+    ${htmlCode.replace(/<!DOCTYPE.*?<body[^>]*>/is, '').replace(/<\/body>.*?<\/html>/is, '')}
+    <script>${jsCode}</script>
+</body>
+</html>`;
+  };
+  
   const previewHTML = useMemo(() => {
     return generatePreviewHTML();
-  }, [htmlCode, cssCode, jsCode, generatePreviewHTML]);
+  }, [htmlCode, cssCode, jsCode]);
 
   const handleRefresh = () => {
     setPreviewKey(prev => prev + 1);
