@@ -135,7 +135,7 @@ skills: ["JavaScript", "React", "CSS"]
             formatted = formatYAML(originalCode, beautifyOptions);
             break;
           case 'markdown':
-            formatted = formatMarkdown(originalCode, beautifyOptions);
+            formatted = formatMarkdown(originalCode);
             break;
           default:
             formatted = originalCode;

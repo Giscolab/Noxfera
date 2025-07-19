@@ -18,7 +18,9 @@ if (typeof window !== 'undefined') {
   });
   
   import('html-minifier-terser').then(module => {
-    htmlMinifier = module;
+    htmlMinifier = module.minify;
+  }).catch(() => {
+    console.warn('html-minifier-terser not available');
   });
 }
 

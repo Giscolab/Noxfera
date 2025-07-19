@@ -133,36 +133,27 @@ const PreviewPane = () => {
                   variant="ghost"
                   size="sm"
                   onClick={handleRefresh}
-                  title="Refresh preview"
+                  className="h-7 w-7 p-0"
                 >
-                  <RefreshCw className="h-4 w-4" />
+                  <RefreshCw className="h-3 w-3" />
                 </Button>
-                
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleOpenExternal}
-                  title="Open in new tab"
+                  className="h-7 w-7 p-0"
                 >
-                  <ExternalLink className="h-4 w-4" />
+                  <ExternalLink className="h-3 w-3" />
                 </Button>
               </>
             )}
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              title="Maximize"
-            >
-              <Maximize2 className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </CardHeader>
-      
-      <CardContent className="flex-1 p-0">
+
+      <CardContent className="flex-1 p-0 overflow-hidden">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-3 m-2">
             <TabsTrigger value="preview" className="flex items-center gap-2">
               <Eye className="h-4 w-4" />
               Preview
@@ -190,7 +181,7 @@ const PreviewPane = () => {
                     <div className="h-full flex items-center justify-center bg-destructive/10">
                       <div className="text-center">
                         <div className="text-destructive text-2xl mb-2">⚠️</div>
-                        <h3 className="font-medium text-destructive mb-1">Preview Error</h3>
+                        <h3 className="font-medium mb-2">Preview Error</h3>
                         <p className="text-sm text-muted-foreground">{previewError}</p>
                       </div>
                     </div>
@@ -243,9 +234,9 @@ const DiffViewer = ({ original, formatted, stats }: DiffViewerProps) => {
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4">📊</div>
-          <h3 className="font-medium mb-2">No Diff Available</h3>
+          <h3 className="font-medium mb-2">No Comparison Available</h3>
           <p className="text-sm text-muted-foreground">
-            Format some code to see the differences
+            Add content to see the differences
           </p>
         </div>
       </div>
@@ -260,16 +251,16 @@ const DiffViewer = ({ original, formatted, stats }: DiffViewerProps) => {
     <div className="h-full flex flex-col">
       <div className="p-4 border-b border-border/50 bg-muted/20">
         <div className="flex items-center justify-between">
-          <h4 className="font-medium">Code Differences</h4>
-          <div className="flex items-center gap-4 text-sm">
-            <span className="flex items-center gap-1">
+          <h4 className="font-medium">Code Comparison</h4>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-green-500 rounded"></div>
-              +{stats.added} added
-            </span>
-            <span className="flex items-center gap-1">
+              <span className="text-sm">Added: {stats.added}</span>
+            </div>
+            <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-red-500 rounded"></div>
-              -{stats.removed} removed
-            </span>
+              <span className="text-sm">Removed: {stats.removed}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -318,7 +309,7 @@ const ConsoleOutput = memo(function ConsoleOutput() {
       if (Math.random() > 0.8) {
         setLogs(prev => {
           const newLog = {
-            type: 'info',
+            type: 'info' as const,
             message: `Auto-save completed at ${new Date().toLocaleTimeString()}`,
             timestamp: Date.now()
           };
@@ -378,6 +369,6 @@ const ConsoleOutput = memo(function ConsoleOutput() {
       </div>
     </div>
   );
-};
+});
 
 export default PreviewPane;

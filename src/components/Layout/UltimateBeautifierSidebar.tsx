@@ -34,13 +34,12 @@ export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, advance
 
   // Solution optimale : utiliser une fonction de mise à jour
   useEffect(() => {
-    setBeautifyOptions(prevOptions => ({
-      ...prevOptions,
+    setBeautifyOptions({
       indent_size: indentSize[0],
       brace_style: braceStyle,
       end_with_newline: endWithNewline,
-    }));
-  }, [indentSize, braceStyle, endWithNewline]);
+    });
+  }, [indentSize, braceStyle, endWithNewline, setBeautifyOptions]);
 
   return (
     <aside 

@@ -52,7 +52,7 @@ export function UltimateBeautifierLayout(): JSX.Element {
       setIsDragActive(false);
       const droppedFiles = e.dataTransfer?.files;
       if (droppedFiles && droppedFiles.length > 0) {
-        await importFiles(Array.from(droppedFiles));
+        await importFiles(droppedFiles);
       }
     };
 
@@ -72,7 +72,7 @@ export function UltimateBeautifierLayout(): JSX.Element {
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (selectedFiles && selectedFiles.length > 0) {
-      await importFiles(Array.from(selectedFiles));
+      await importFiles(selectedFiles);
     }
   };
 

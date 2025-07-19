@@ -30,9 +30,9 @@ const Sidebar: React.FC = () => {
   const { createNewFile, importFiles, exportAllFiles } = useFileStore();
 
   const handleFileImport = async (event: ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files ?? []);
-    if (files.length > 0) {
-      await importFiles(files);
+    const fileList = event.target.files;
+    if (fileList && fileList.length > 0) {
+      await importFiles(fileList);
     }
     event.target.value = '';
   };

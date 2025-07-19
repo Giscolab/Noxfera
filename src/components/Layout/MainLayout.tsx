@@ -71,7 +71,7 @@ const MainLayout: React.FC = () => {
       </div>
 
       {showWelcome && <WelcomeOverlay />}
-      <DragDropArea />
+      <DragDropArea active={false} />
     </div>
   );
 };

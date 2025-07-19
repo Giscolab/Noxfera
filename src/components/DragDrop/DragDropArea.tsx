@@ -24,3 +24,5 @@ export function DragDropArea({ active }: DragDropAreaProps) {
     </div>
   );
 }
+
+export default DragDropArea;
