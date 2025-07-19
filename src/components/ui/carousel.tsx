@@ -17,6 +17,9 @@ type CarouselProps = {
   plugins?: CarouselPlugin
   orientation?: "horizontal" | "vertical"
   setApi?: (api: CarouselApi) => void
+  ariaLabel?: string
+  previousButtonLabel?: string
+  nextButtonLabel?: string
 }
 
 type CarouselContextProps = {
@@ -26,6 +29,8 @@ type CarouselContextProps = {
   scrollNext: () => void
   canScrollPrev: boolean
   canScrollNext: boolean
+  previousButtonLabel: string
+  nextButtonLabel: string
 } & CarouselProps
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
@@ -52,6 +57,9 @@ const Carousel = React.forwardRef<
       plugins,
       className,
       children,
+      ariaLabel = "Carousel",
+      previousButtonLabel = "Previous slide",
+      nextButtonLabel = "Next slide",
       ...props
     },
     ref
@@ -114,7 +122,8 @@ const Carousel = React.forwardRef<
       api.on("select", onSelect)
 
       return () => {
-        api?.off("select", onSelect)
+        api.off("reInit", onSelect)
+        api.off("select", onSelect)
       }
     }, [api, onSelect])
 
@@ -122,14 +131,15 @@ const Carousel = React.forwardRef<
       <CarouselContext.Provider
         value={{
           carouselRef,
-          api: api,
+          api,
           opts,
-          orientation:
-            orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+          orientation,
           scrollPrev,
           scrollNext,
           canScrollPrev,
           canScrollNext,
+          previousButtonLabel,
+          nextButtonLabel
         }}
       >
         <div
@@ -137,6 +147,7 @@ const Carousel = React.forwardRef<
           onKeyDownCapture={handleKeyDown}
           className={cn("relative", className)}
           role="region"
+          aria-label={ariaLabel}
           aria-roledescription="carousel"
           {...props}
         >
@@ -196,7 +207,12 @@ const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
 >(({ className, variant = "outline", size = "icon", ...props }, ref) => {
-  const { orientation, scrollPrev, canScrollPrev } = useCarousel()
+  const { 
+    orientation, 
+    scrollPrev, 
+    canScrollPrev,
+    previousButtonLabel
+  } = useCarousel()
 
   return (
     <Button
@@ -204,7 +220,7 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute  h-8 w-8 rounded-full",
+        "absolute h-8 w-8 rounded-full",
         orientation === "horizontal"
           ? "-left-12 top-1/2 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -212,10 +228,11 @@ const CarouselPrevious = React.forwardRef<
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
+      aria-label={previousButtonLabel}
       {...props}
     >
       <ArrowLeft className="h-4 w-4" />
-      <span className="sr-only">Previous slide</span>
+      <span className="sr-only">{previousButtonLabel}</span>
     </Button>
   )
 })
@@ -225,7 +242,12 @@ const CarouselNext = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
 >(({ className, variant = "outline", size = "icon", ...props }, ref) => {
-  const { orientation, scrollNext, canScrollNext } = useCarousel()
+  const { 
+    orientation, 
+    scrollNext, 
+    canScrollNext,
+    nextButtonLabel
+  } = useCarousel()
 
   return (
     <Button
@@ -241,10 +263,11 @@ const CarouselNext = React.forwardRef<
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
+      aria-label={nextButtonLabel}
       {...props}
     >
       <ArrowRight className="h-4 w-4" />
-      <span className="sr-only">Next slide</span>
+      <span className="sr-only">{nextButtonLabel}</span>
     </Button>
   )
 })

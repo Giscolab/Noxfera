@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { UltimateBeautifierLayout } from "./components/Layout/UltimateBeautifierLayout";
 import { useReactHealth, validateZustandReact } from "./hooks/useReactHealth";
 
-const App = () => {
+const App: React.FC = () => {
   const isReactHealthy = useReactHealth();
   
   // Valider la compatibilité React/Zustand au démarrage
@@ -13,13 +13,15 @@ const App = () => {
     const isZustandCompatible = validateZustandReact();
     if (!isZustandCompatible) {
       console.error('Zustand compatibility issue detected');
+      // Optionnel : afficher une notification à l'utilisateur
+      // toast.destructive({ title: "Erreur", description: "Problème de compatibilité Zustand" });
     }
   }, []);
   
   if (!isReactHealthy) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
+        <div className="text-center p-4">
           <h1 className="text-2xl font-bold text-foreground mb-4">Chargement...</h1>
           <p className="text-muted-foreground">Initialisation de l'application</p>
         </div>
@@ -28,11 +30,11 @@ const App = () => {
   }
   
   return (
-    <div>
+    <TooltipProvider delayDuration={300}>
       <Toaster />
       <Sonner />
       <UltimateBeautifierLayout />
-    </div>
+    </TooltipProvider>
   );
 };
 

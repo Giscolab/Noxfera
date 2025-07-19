@@ -2,18 +2,31 @@ import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768
 
-export function useIsMobile() {
+/**
+ * Détecte si l'écran est inférieur au breakpoint mobile.
+ * @returns `true` si l'écran est mobile (width < 768px)
+ */
+export const useIsMobile = (): boolean => {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
 
   React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    const mediaQuery = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`
+    const mql = window.matchMedia(mediaQuery)
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches)
     }
-    mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    return () => mql.removeEventListener("change", onChange)
+    
+    // Mise à jour initiale
+    setIsMobile(mql.matches)
+    
+    // Écouteur d'événement moderne avec type correct
+    mql.addEventListener("change", handleChange)
+    
+    return () => {
+      mql.removeEventListener("change", handleChange)
+    }
   }, [])
 
-  return !!isMobile
+  return isMobile ?? false
 }

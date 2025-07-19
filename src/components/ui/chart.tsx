@@ -1,7 +1,7 @@
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
-
 import { cn } from "@/lib/utils"
+import DOMPurify from "dompurify" // Ajout pour la sécurité
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
@@ -63,9 +63,9 @@ const ChartContainer = React.forwardRef<
     </ChartContext.Provider>
   )
 })
-ChartContainer.displayName = "Chart"
+ChartContainer.displayName = "ChartContainer"
 
-const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+const ChartStyle = React.memo(({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
     ([_, config]) => config.theme || config.color
   )
@@ -74,31 +74,43 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
+  // Génération sécurisée du CSS avec DOMPurify
+  const cssContent = Object.entries(THEMES)
+    .map(
+      ([theme, prefix]) => 
+        `${prefix} [data-chart=${id}] {
+          ${colorConfig
+            .map(([key, itemConfig]) => {
+              const color =
+                itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+                itemConfig.color
+              return color ? `  --color-${key}: ${color};` : null
+            })
+            .filter(Boolean)
+            .join("\n")}
+        }`
+    )
+    .join("\n")
+
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
-${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
-}
-`
-          )
-          .join("\n"),
+        __html: DOMPurify.sanitize(cssContent),
       }}
     />
   )
-}
+})
+ChartStyle.displayName = "ChartStyle"
 
 const ChartTooltip = RechartsPrimitive.Tooltip
+
+// Helper pour extraire les valeurs de chaîne des objets
+const extractStringValue = (obj: any, key: string): string | undefined => {
+  if (obj && typeof obj === 'object' && key in obj && typeof obj[key] === 'string') {
+    return obj[key]
+  }
+  return undefined
+}
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
@@ -186,11 +198,11 @@ const ChartTooltipContent = React.forwardRef<
           {payload.map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
-            const indicatorColor = color || item.payload.fill || item.color
+            const indicatorColor = color || item.payload?.fill || item.color
 
             return (
               <div
-                key={item.dataKey}
+                key={`${item.dataKey}-${index}`}
                 className={cn(
                   "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
                   indicator === "dot" && "items-center"
@@ -236,9 +248,12 @@ const ChartTooltipContent = React.forwardRef<
                           {itemConfig?.label || item.name}
                         </span>
                       </div>
-                      {item.value && (
+                      {/* Correction pour afficher la valeur 0 */}
+                      {item.value !== undefined && (
                         <span className="font-mono font-medium tabular-nums text-foreground">
-                          {item.value.toLocaleString()}
+                          {typeof item.value === 'number' 
+                            ? item.value.toLocaleString() 
+                            : item.value}
                         </span>
                       )}
                     </div>
@@ -252,16 +267,24 @@ const ChartTooltipContent = React.forwardRef<
     )
   }
 )
-ChartTooltipContent.displayName = "ChartTooltip"
+ChartTooltipContent.displayName = "ChartTooltipContent"
 
 const ChartLegend = RechartsPrimitive.Legend
+
+// Type pour les éléments de légende
+type LegendPayloadItem = {
+  value?: string;
+  dataKey?: string;
+  color?: string;
+};
 
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+    Pick<RechartsPrimitive.LegendProps, "verticalAlign"> & {
       hideIcon?: boolean
       nameKey?: string
+      payload?: LegendPayloadItem[]
     }
 >(
   (
@@ -289,7 +312,7 @@ const ChartLegendContent = React.forwardRef<
 
           return (
             <div
-              key={item.value}
+              key={`${item.value}-${item.dataKey}`}
               className={cn(
                 "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
               )}
@@ -304,7 +327,7 @@ const ChartLegendContent = React.forwardRef<
                   }}
                 />
               )}
-              {itemConfig?.label}
+              {itemConfig?.label || item.value}
             </div>
           )
         })}
@@ -312,9 +335,9 @@ const ChartLegendContent = React.forwardRef<
     )
   }
 )
-ChartLegendContent.displayName = "ChartLegend"
+ChartLegendContent.displayName = "ChartLegendContent"
 
-// Helper to extract item config from a payload.
+// Helper simplifié pour extraire la configuration
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,
@@ -324,33 +347,17 @@ function getPayloadConfigFromPayload(
     return undefined
   }
 
-  const payloadPayload =
-    "payload" in payload &&
-    typeof payload.payload === "object" &&
-    payload.payload !== null
+  const payloadPayload = 
+    "payload" in payload && typeof payload.payload === "object" && payload.payload !== null
       ? payload.payload
       : undefined
 
-  let configLabelKey: string = key
+  // Utilisation du helper d'extraction
+  const fromPayload = extractStringValue(payload, key)
+  const fromInner = extractStringValue(payloadPayload, key)
+  const configLabelKey = fromPayload || fromInner || key
 
-  if (
-    key in payload &&
-    typeof payload[key as keyof typeof payload] === "string"
-  ) {
-    configLabelKey = payload[key as keyof typeof payload] as string
-  } else if (
-    payloadPayload &&
-    key in payloadPayload &&
-    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
-  ) {
-    configLabelKey = payloadPayload[
-      key as keyof typeof payloadPayload
-    ] as string
-  }
-
-  return configLabelKey in config
-    ? config[configLabelKey]
-    : config[key as keyof typeof config]
+  return config[configLabelKey as keyof typeof config] || config[key as keyof typeof config]
 }
 
 export {

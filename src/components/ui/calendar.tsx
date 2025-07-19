@@ -1,16 +1,21 @@
-import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker } from "react-day-picker";
+import * as React from "react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import { DayPicker } from "react-day-picker"
 
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+  previousMonthLabel?: string
+  nextMonthLabel?: string
+}
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  previousMonthLabel = "Mois précédent",
+  nextMonthLabel = "Mois suivant",
   ...props
 }: CalendarProps) {
   return (
@@ -52,13 +57,47 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
+        IconLeft: ({ ..._props }) => (
+          <ChevronLeft 
+            className="h-4 w-4" 
+            aria-hidden="true" 
+          />
+        ),
+        IconRight: ({ ..._props }) => (
+          <ChevronRight 
+            className="h-4 w-4" 
+            aria-hidden="true" 
+          />
+        ),
+        NavButtonPrev: ({ ...navProps }) => (
+          <button
+            {...navProps}
+            aria-label={previousMonthLabel}
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute left-1"
+            )}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+        ),
+        NavButtonNext: ({ ...navProps }) => (
+          <button
+            {...navProps}
+            aria-label={nextMonthLabel}
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute right-1"
+            )}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        )
       }}
       {...props}
     />
-  );
+  )
 }
-Calendar.displayName = "Calendar";
+Calendar.displayName = "Calendar"
 
-export { Calendar };
+export { Calendar }
