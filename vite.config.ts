@@ -17,4 +17,21 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    exclude: [
+      'clean-css',
+      'html-minifier-terser',
+      '@jridgewell/trace-mapping'
+    ]
+  },
+  build: {
+    sourcemap: false,
+    rollupOptions: {
+      external: [
+        'clean-css',
+        'html-minifier-terser',
+        '@jridgewell/trace-mapping'
+      ]
+    }
+  }
 }));

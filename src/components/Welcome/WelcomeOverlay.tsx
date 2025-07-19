@@ -1,159 +1,125 @@
+console.log("✅ WelcomeOverlay.tsx chargé");
+
 import React from 'react';
-import { Sparkles, FileCode, Upload } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Sparkles, FileCode, ScanLine, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import useEditorStore from '@/stores/useEditorStore';
+import useFileStore from '@/stores/useFileStore';
 
-interface WelcomeOverlayProps {
-  onClose: () => void;
+interface Template {
+  type: string;
+  label: string;
+  icon: string;
 }
 
-export function WelcomeOverlay({ onClose }: WelcomeOverlayProps) {
-  const handleMagicBox = () => {
-    const code = prompt("Collez votre code ici:");
+export default function WelcomeOverlay(): JSX.Element {
+  const {
+    setShowWelcome,
+    setOriginalCode,
+    setCurrentLanguage,
+    detectLanguage,
+  } = useEditorStore();
+
+  const { createNewFile } = useFileStore();
+
+  const handleMagicPaste = (): void => {
+    const code = prompt('✨ Collez ici votre code pour exécuter les vérifications syntaxiques :');
     if (code) {
-      // Handle pasted code
-      onClose();
+      const language = detectLanguage(code);
+      setOriginalCode(code);
+      setCurrentLanguage(language);
+      setShowWelcome(false);
     }
   };
 
-  const handleTemplate = () => {
-    const templates = {
-      html: `<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        body{font-family:sans-serif;margin:0;padding:20px;background:#f5f5f5;}
-        .container{max-width:800px;margin:0 auto;background:white;padding:30px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Bonjour le monde</h1>
-        <p>Ceci est un modèle HTML de départ</p>
-    </div>
-</body>
-</html>`,
-      css: `/* Styles de base */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.header {
-    background-color: #6366f1;
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-}
-
-.btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #6366f1;
-    color: white;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s;
-}
-
-.btn:hover {
-    background-color: #4f46e5;
-}`,
-      javascript: `// Fonction pour calculer la factorielle
-function factorial(n) {
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    return n * factorial(n - 1);
-}
-
-// Fonction pour formater une date
-function formatDate(date) {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return \`\${day}/\${month}/\${year}\`;
-}
-
-// Utilisation des fonctions
-console.log('Factorielle de 5:', factorial(5));
-console.log('Date du jour:', formatDate(new Date()));`
-    };
-
-    const templateType = prompt("Choisissez un modèle (html, css, javascript):", "html") as keyof typeof templates;
-    if (templateType && templates[templateType]) {
-      // Handle template selection
-      onClose();
-    }
+  const handleTemplate = (type: string): void => {
+    createNewFile(`example.${type}`, type);
+    setShowWelcome(false);
   };
+
+  const templates: Template[] = [
+    { type: 'html', label: 'HTML Template', icon: '🌐' },
+    { type: 'css', label: 'CSS Styles', icon: '🎨' },
+    { type: 'javascript', label: 'JavaScript', icon: '⚡' },
+    { type: 'json', label: 'JSON Data', icon: '📋' },
+  ];
 
   return (
-    <div className="welcome-overlay animate-fade-in">
-      <Card className="w-full max-w-2xl mx-4 shadow-2xl">
-        <CardHeader className="text-center pb-4">
-          <CardTitle className="text-3xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
-            <Sparkles className="w-8 h-8" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--greyLight-1)] text-[var(--greyDark)] animate-fade-in">
+      <Card className="w-full max-w-2xl bg-[var(--greyLight-1)] rounded-[2rem] p-8 shadow-[0.3rem_0.3rem_0.6rem_var(--greyLight-2),_-0.2rem_-0.2rem_0.5rem_var(--white)] relative">
+        <CardHeader className="text-center space-y-4">
+          <div className="relative mx-auto w-16 h-16">
+            <Sparkles className="w-16 h-16 text-primary animate-pulse" />
+            <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl" />
+          </div>
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             noxfera
           </CardTitle>
-          <p className="text-muted-foreground text-lg leading-relaxed">
-            Formatez votre code instantanément avec une interface élégante et intuitive.
-            <br />
-            <span className="text-primary font-semibold">Astuce :</span> Utilisez la{' '}
-            <strong>boîte magique</strong> pour coller ou déposer du code, ou démarrez avec un modèle.
+          <p className="text-muted-foreground max-w-lg mx-auto">
+            Transformez votre code chaotique en une structure propre, élégante et digne d’un niveau professionnel.
+            Compatible avec HTML, CSS, JavaScript, JSON, YAML — et bien d’autres langages.
           </p>
         </CardHeader>
-        
-        <CardContent className="space-y-6">
-          {/* Magic Box */}
-          <Card 
-            className="border-2 border-dashed border-muted-foreground/50 hover:border-primary cursor-pointer transition-all duration-300 hover:bg-accent/50 animate-pulse-glow"
-            onClick={handleMagicBox}
-          >
-            <CardContent className="flex flex-col items-center justify-center py-8 text-center">
-              <Sparkles className="w-12 h-12 text-primary mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Boîte magique de formatage</h3>
-              <p className="text-muted-foreground mb-4">
-                Collez votre code ici ou glissez-déposez des fichiers
-              </p>
-              <span className="text-primary text-sm">
-                ✨ Astuce : Essayez avec du HTML, CSS, JS, JSON…
-              </span>
-            </CardContent>
-          </Card>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button 
-              onClick={handleTemplate}
-              className="flex items-center gap-2"
-              size="lg"
+        <CardContent className="space-y-8 p-0">
+          {/* Magic Box */}
+          <div
+            onClick={handleMagicPaste}
+            className="mx-auto max-w-md p-6 rounded-2xl shadow-[inset_0.2rem_0.2rem_0.5rem_var(--greyLight-2),_inset_-0.2rem_-0.2rem_0.5rem_var(--white)] cursor-pointer transition-all duration-300 hover:scale-[1.02]"
+          >
+            <div className="text-center space-y-3">
+              <ScanLine className="w-8 h-8 text-primary mx-auto transition-all group-hover:animate-bounce group-hover:text-primary/80" />
+              <h3 className="font-semibold">Interface de formatage universel</h3>
+              <p className="text-sm text-muted-foreground">
+                Déposez un fichier ou collez du code à analyser, reformater et normaliser.
+              </p>
+            </div>
+          </div>
+
+          {/* Templates */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-center">Ou utilisez un modèle de départ :</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {templates.map((template) => (
+                <Button
+                  key={template.type}
+                  variant="ghost"
+                  type="button"
+                  onClick={() => handleTemplate(template.type)}
+                  className="p-4 h-auto flex-col gap-2 rounded-xl bg-[var(--greyLight-1)] text-[var(--greyDark)] shadow-[0.3rem_0.3rem_0.6rem_var(--greyLight-2),_-0.2rem_-0.2rem_0.5rem_var(--white)] hover:shadow-[inset_0.2rem_0.2rem_0.5rem_var(--greyLight-2),_inset_-0.2rem_-0.2rem_0.5rem_var(--white)] transition-all"
+                >
+                  <span className="text-2xl">{template.icon}</span>
+                  <span className="text-xs">{template.label}</span>
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Action principale */}
+          <div className="flex justify-center pt-4">
+            <Button
+              type="button"
+              onClick={() => setShowWelcome(false)}
+              className="px-8 py-2 rounded-xl bg-[var(--greyLight-1)] text-[var(--greyDark)] shadow-[0.3rem_0.3rem_0.6rem_var(--greyLight-2),_-0.2rem_-0.2rem_0.5rem_var(--white)] hover:shadow-[inset_0.2rem_0.2rem_0.5rem_var(--greyLight-2),_inset_-0.2rem_-0.2rem_0.5rem_var(--white)] transition-all"
             >
-              <FileCode className="w-5 h-5" />
-              Commencer avec un modèle
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              onClick={onClose}
-              size="lg"
-            >
-              Explorer par moi-même
+              <FileCode className="w-4 h-4 mr-2" />
+              Commencer
             </Button>
           </div>
         </CardContent>
+
+        {/* Close Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          type="button"
+          onClick={() => setShowWelcome(false)}
+          className="absolute top-4 right-4"
+          aria-label="Fermer l'écran de bienvenue"
+        >
+          <X className="w-4 h-4" />
+        </Button>
       </Card>
     </div>
   );

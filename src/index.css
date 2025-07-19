@@ -4,40 +4,45 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* =============== DESIGN SYSTEM FONDATEUR =============== */
 @layer base {
   :root {
-    --primary: 262 83% 58%;
-    --primary-dark: hsl(260.9deg 88.76% 48.82%);
-    --secondary: 220 14% 96%;
+    /* Couleurs principales */
+    --primary: 198 42.08% 24.49%;
+    --primary-dark: 260.9deg 88.76% 48.82%;
+    --highlight: 262 83% 58% / 0.1;
+
+    /* Surfaces & fonds */
     --background: 220 41% 95%;
     --surface: 0 0% 100%;
+    --card: 220 14% 96%;
+
+    /* Texte */
     --text-primary: 224 71% 4%;
     --text-secondary: 220 9% 46%;
+    --foreground: var(--text-primary);
+    --card-foreground: var(--text-primary);
+    --popover: var(--card);
+    --popover-foreground: var(--text-primary);
+
+    /* Feedback */
     --success: 142 76% 36%;
     --warning: 45 93% 47%;
     --error: 0 84% 60%;
-    --border: 220 13% 91%;
-    --highlight: 262 83% 58% / 0.1;
 
-    --foreground: var(--text-primary);
-    --card: var(--secondary);
-    --card-foreground: var(--text-primary);
-    --popover: var(--secondary);
-    --popover-foreground: var(--text-primary);
-    --primary-foreground: 210 20% 98%;
-    --secondary-foreground: var(--text-secondary);
-    --muted: 220 14% 93%;
-    --muted-foreground: var(--text-secondary);
-    --accent: 220 14% 97%;
-    --accent-foreground: var(--text-secondary);
-    --destructive: var(--error);
-    --destructive-foreground: 210 20% 98%;
+    /* Bordures */
+    --border: 220 13% 91%;
+    --border-dark: 220 13% 81%;
+    --border-light: 220 13% 100%;
+    --border-shadow: 
+      0.3rem 0.3rem 0.6rem hsl(var(--border-dark)),
+      -0.2rem -0.2rem 0.5rem hsl(var(--border-light));
+
     --input: var(--border);
     --ring: var(--primary);
     --radius: 0.75rem;
 
+    /* Neumorphisme */
     --neumorph-distance: 12px;
     --neumorph-intensity: 0.15;
     --neumorph-blur: 24px;
@@ -47,103 +52,92 @@
     --neumorph-shadow-light: calc(-1 * var(--neumorph-distance)) calc(-1 * var(--neumorph-distance)) var(--neumorph-blur) hsl(var(--neumorph-light) / var(--neumorph-intensity));
     --neumorph-shadow-dark: var(--neumorph-distance) var(--neumorph-distance) var(--neumorph-blur) hsl(var(--neumorph-dark) / var(--neumorph-intensity));
 
-  --white: hsl(0deg 0% 100%);
-  --greyLight-1: hsl(215.29deg 45.95% 92.75%);
-  --greyLight-2: hsl(224.52deg 39.24% 84.51%);
-  --greyLight-3: hsl(224.21deg 41.3% 81.96%);
-  --greyDark: hsl(222.69deg 35.14% 70.98%);
+    /* Gris / neutres */
+    --white: hsl(0 0% 100%);
+    --greyLight-1: hsl(215.29deg 45.95% 92.75%);
+    --greyLight-2: hsl(224.52deg 39.24% 84.51%);
+    --greyLight-3: hsl(224.21deg 41.3% 81.96%);
+    --greyDark: hsl(222.69deg 35.14% 70.98%);
   }
 
-/* Dracula */
-.dracula {
-  --primary: hsl(265, 89%, 78%);
-  --primary-dark: hsl(265, 31%, 52%);
-  --background: hsl(231, 15%, 18%);
-  --surface: hsl(225, 27%, 22%);
-  --card: var(--surface);
-  --text-primary: hsl(60, 30%, 96%);
-  --text-secondary: hsl(225, 14%, 64%);
-  --neumorph-light: hsl(231, 13%, 24%);
-  --neumorph-dark: hsl(231, 16%, 14%);
-}
+  /* Themes personnalisés */
+  .dracula {
+    --primary: 265 89% 78%;
+    --primary-dark: 265 31% 52%;
+    --background: 231 15% 18%;
+    --surface: 225 27% 22%;
+    --text-primary: 60 30% 96%;
+    --text-secondary: 225 14% 64%;
+    --neumorph-light: 231 13% 24%;
+    --neumorph-dark: 231 16% 14%;
+  }
 
-/* Frankenstein */
-.frankenstein {
-  --primary: hsl(120, 73%, 75%);
-  --primary-dark: hsl(120, 25%, 35%);
-  --background: hsl(0, 0%, 15%);
-  --surface: hsl(0, 0%, 25%);
-  --card: var(--surface);
-  --text-primary: hsl(60, 30%, 90%);
-  --text-secondary: hsl(120, 10%, 65%);
-  --neumorph-light: hsl(0, 0%, 20%);
-  --neumorph-dark: hsl(0, 0%, 10%);
-}
+  .frankenstein {
+    --primary: 120 73% 75%;
+    --primary-dark: 120 25% 35%;
+    --background: 0 0% 15%;
+    --surface: 0 0% 25%;
+    --text-primary: 60 30% 90%;
+    --text-secondary: 120 10% 65%;
+    --neumorph-light: 0 0% 20%;
+    --neumorph-dark: 0 0% 10%;
+  }
 
-/* Momie */
-.mummy {
-  --primary: hsl(45, 100%, 60%);
-  --primary-dark: hsl(30, 70%, 40%);
-  --background: hsl(30, 30%, 12%);
-  --surface: hsl(30, 25%, 20%);
-  --card: var(--surface);
-  --text-primary: hsl(45, 40%, 90%);
-  --text-secondary: hsl(30, 20%, 65%);
-  --neumorph-light: hsl(30, 25%, 17%);
-  --neumorph-dark: hsl(30, 35%, 7%);
-}
+  .mummy {
+    --primary: 45 100% 60%;
+    --primary-dark: 30 70% 40%;
+    --background: 30 30% 12%;
+    --surface: 30 25% 20%;
+    --text-primary: 45 40% 90%;
+    --text-secondary: 30 20% 65%;
+    --neumorph-light: 30 25% 17%;
+    --neumorph-dark: 30 35% 7%;
+  }
 
-/* Loup-Garou */
-.werewolf {
-  --primary: hsl(200, 15%, 80%);
-  --primary-dark: hsl(200, 25%, 40%);
-  --background: hsl(100, 10%, 10%);
-  --surface: hsl(100, 8%, 15%);
-  --card: var(--surface);
-  --text-primary: hsl(60, 10%, 85%);
-  --text-secondary: hsl(100, 10%, 65%);
-  --neumorph-light: hsl(100, 9%, 13%);
-  --neumorph-dark: hsl(100, 11%, 7%);
-}
+  .werewolf {
+    --primary: 200 15% 80%;
+    --primary-dark: 200 25% 40%;
+    --background: 100 10% 10%;
+    --surface: 100 8% 15%;
+    --text-primary: 60 10% 85%;
+    --text-secondary: 100 10% 65%;
+    --neumorph-light: 100 9% 13%;
+    --neumorph-dark: 100 11% 7%;
+  }
 
-/* Fantôme de l'Opéra */
-.phantom {
-  --primary: hsl(290, 50%, 60%);
-  --primary-dark: hsl(290, 30%, 35%);
-  --background: hsl(0, 0%, 8%);
-  --surface: hsl(290, 10%, 15%);
-  --card: var(--surface);
-  --text-primary: hsl(50, 40%, 90%);
-  --text-secondary: hsl(290, 15%, 65%);
-  --neumorph-light: hsl(290, 9%, 11%);
-  --neumorph-dark: hsl(290, 11%, 5%);
-}
+  .phantom {
+    --primary: 290 50% 60%;
+    --primary-dark: 290 30% 35%;
+    --background: 0 0% 8%;
+    --surface: 290 10% 15%;
+    --text-primary: 50 40% 90%;
+    --text-secondary: 290 15% 65%;
+    --neumorph-light: 290 9% 11%;
+    --neumorph-dark: 290 11% 5%;
+  }
 
-/* Dorian Gray */
-.dorian {
-  --primary: hsl(35, 60%, 65%);
-  --primary-dark: hsl(35, 40%, 45%);
-  --background: hsl(35, 30%, 15%);
-  --surface: hsl(35, 25%, 25%);
-  --card: var(--surface);
-  --text-primary: hsl(35, 30%, 90%);
-  --text-secondary: hsl(35, 20%, 65%);
-  --neumorph-light: hsl(35, 25%, 20%);
-  --neumorph-dark: hsl(35, 35%, 10%);
-}
+  .dorian {
+    --primary: 35 60% 65%;
+    --primary-dark: 35 40% 45%;
+    --background: 35 30% 15%;
+    --surface: 35 25% 25%;
+    --text-primary: 35 30% 90%;
+    --text-secondary: 35 20% 65%;
+    --neumorph-light: 35 25% 20%;
+    --neumorph-dark: 35 35% 10%;
+  }
 
-/* Sorcière */
-.witch {
-  --primary: hsl(330, 80%, 65%);
-  --primary-dark: hsl(270, 50%, 45%);
-  --background: hsl(60, 10%, 12%);
-  --surface: hsl(60, 15%, 18%);
-  --card: var(--surface);
-  --text-primary: hsl(60, 40%, 90%);
-  --text-secondary: hsl(330, 20%, 65%);
-  --neumorph-light: hsl(60, 12%, 15%);
-  --neumorph-dark: hsl(60, 8%, 9%);
-}
+  .witch {
+    --primary: 330 80% 65%;
+    --primary-dark: 270 50% 45%;
+    --background: 60 10% 12%;
+    --surface: 60 15% 18%;
+    --text-primary: 60 40% 90%;
+    --text-secondary: 330 20% 65%;
+    --neumorph-light: 60 12% 15%;
+    --neumorph-dark: 60 8% 9%;
+  }
+
   * {
     @apply border-border;
   }
@@ -155,26 +149,29 @@
     overflow: hidden;
   }
 
-  .file-icon.html { color: #e34c26; }
-  .file-icon.css { color: #2965f1; }
-  .file-icon.javascript, .file-icon.json { color: #f0db4f; }
+  /* Fichiers */
+  .file-icon.html       { color: #e34c26; }
+  .file-icon.css        { color: #2965f1; }
+  .file-icon.javascript,
+  .file-icon.json       { color: #f0db4f; }
   .file-icon.typescript { color: #3178c6; }
-  .file-icon.python { color: #3572A5; }
-  .file-icon.markdown { color: #083fa1; }
+  .file-icon.python     { color: #3572A5; }
+  .file-icon.markdown   { color: #083fa1; }
 
+  /* Animations */
   @keyframes fade-in {
     from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes slide-in-right {
     from { transform: translateX(100%); }
-    to { transform: translateX(0); }
+    to   { transform: translateX(0); }
   }
 
   @keyframes pulse-glow {
     0%, 100% { opacity: 0.5; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(1.05); }
+    50%      { opacity: 0.8; transform: scale(1.05); }
   }
 }
 
@@ -201,7 +198,7 @@
     @apply bg-card flex items-center justify-between px-8 rounded-xl;
     box-shadow:
       8px 8px 16px hsl(var(--neumorph-shadow-dark)),
-      -8px -8px 16px hsl(var(--neumorph-shadow-light));
+     -8px -8px 16px hsl(var(--neumorph-shadow-light));
     border: 1px solid hsl(var(--border));
   }
 
@@ -210,7 +207,7 @@
     @apply bg-card flex items-center justify-between px-8 text-sm text-muted-foreground rounded-xl;
     box-shadow:
       4px 4px 8px hsl(var(--neumorph-shadow-dark)),
-      -4px -4px 8px hsl(var(--neumorph-shadow-light));
+     -4px -4px 8px hsl(var(--neumorph-shadow-light));
     border: 1px solid hsl(var(--border));
   }
 
@@ -251,8 +248,14 @@
     animation: pulse-glow 2s ease-in-out infinite;
   }
 
+  .border-shadow {
+    box-shadow: var(--border-shadow);
+  }
+
   .shadow-neu {
-    box-shadow: var(--neumorph-shadow-dark), var(--neumorph-shadow-light);
+    box-shadow:
+      var(--neumorph-shadow-dark),
+      var(--neumorph-shadow-light);
   }
 
   .shadow-neu-inset {
