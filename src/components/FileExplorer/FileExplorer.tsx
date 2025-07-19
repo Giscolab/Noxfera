@@ -10,7 +10,15 @@ import {
 import useFileStore from '@/stores/useFileStore';
 import useEditorStore from '@/stores/useEditorStore';
 
-const FileExplorer = () => {
+interface FileItem {
+  id: string;
+  name: string;
+  content: string;
+  language: string;
+  modified?: boolean;
+}
+
+const FileExplorer: React.FC = () => {
   const { 
     files, 
     activeFileId, 
@@ -18,22 +26,22 @@ const FileExplorer = () => {
     removeFile,
     getActiveFile 
   } = useFileStore();
-  
+
   const { setOriginalCode, setCurrentLanguage } = useEditorStore();
 
-  const handleFileSelect = (file) => {
+  const handleFileSelect = (file: FileItem) => {
     setActiveFile(file.id);
     setOriginalCode(file.content);
     setCurrentLanguage(file.language);
   };
 
-  const handleFileRemove = (e, fileId) => {
+  const handleFileRemove = (e: React.MouseEvent, fileId: string) => {
     e.stopPropagation();
     removeFile(fileId);
   };
 
-  const getFileIcon = (language) => {
-    const iconMap = {
+  const getFileIcon = (language: string) => {
+    const iconMap: Record<string, React.ElementType> = {
       html: FileCode,
       css: FileCode,
       javascript: FileCode,
@@ -47,12 +55,11 @@ const FileExplorer = () => {
       sql: FileCode,
       shell: FileCode,
     };
-    
     return iconMap[language] || File;
   };
 
-  const getLanguageColor = (language) => {
-    const colors = {
+  const getLanguageColor = (language: string): string => {
+    const colors: Record<string, string> = {
       html: 'text-orange-500',
       css: 'text-blue-500',
       javascript: 'text-yellow-500',
@@ -66,7 +73,6 @@ const FileExplorer = () => {
       sql: 'text-cyan-500',
       shell: 'text-gray-600',
     };
-    
     return colors[language] || 'text-muted-foreground';
   };
 
@@ -82,41 +88,33 @@ const FileExplorer = () => {
 
   return (
     <div className="space-y-1">
-      {files.map((file) => {
+      {files.map((file: FileItem) => {
         const Icon = getFileIcon(file.language);
         const isActive = file.id === activeFileId;
-        
+
         return (
           <div
             key={file.id}
-            className={`
-              group flex items-center justify-between px-3 py-2 rounded-md cursor-pointer
-              transition-all duration-200 hover:bg-accent/50
-              ${isActive ? 'bg-accent text-accent-foreground shadow-sm' : 'hover:bg-accent/30'}
-            `}
+            className={`group flex items-center justify-between px-3 py-2 rounded-md cursor-pointer
+                        transition-all duration-200 hover:bg-accent/50
+                        ${isActive ? 'bg-accent text-accent-foreground shadow-sm' : 'hover:bg-accent/30'}`}
             onClick={() => handleFileSelect(file)}
           >
             <div className="flex items-center gap-2 min-w-0 flex-1">
               <Icon className={`h-4 w-4 flex-shrink-0 ${getLanguageColor(file.language)}`} />
-              
-              <span className="text-sm font-medium truncate">
-                {file.name}
-              </span>
-              
+              <span className="text-sm font-medium truncate">{file.name}</span>
               {file.modified && (
                 <Circle className="h-2 w-2 fill-primary text-primary flex-shrink-0" />
               )}
             </div>
-            
+
             {files.length > 1 && (
               <Button
                 variant="ghost"
                 size="sm"
-                className={`
-                  h-6 w-6 p-0 opacity-0 group-hover:opacity-100 
-                  transition-opacity hover:bg-destructive/20 hover:text-destructive
-                  ${isActive ? 'opacity-100' : ''}
-                `}
+                className={`h-6 w-6 p-0 opacity-0 group-hover:opacity-100 
+                            transition-opacity hover:bg-destructive/20 hover:text-destructive
+                            ${isActive ? 'opacity-100' : ''}`}
                 onClick={(e) => handleFileRemove(e, file.id)}
               >
                 <X className="h-3 w-3" />

@@ -7,7 +7,6 @@ import {
   Download, 
   Maximize2, 
   Minimize2,
-  Eye,
   EyeOff,
   RotateCcw
 } from 'lucide-react';
@@ -15,14 +14,23 @@ import { useToast } from '@/hooks/use-toast';
 import useEditorStore from '@/stores/useEditorStore';
 import useFileStore from '@/stores/useFileStore';
 
-// Monaco Editor will be loaded dynamically
-let monaco = null;
+// Déclaration des types pour Monaco
+declare global {
+  interface Window {
+    monaco: any;
+    require: any;
+  }
+}
 
-const EditorPane = ({ type }) => {
-  const editorRef = useRef(null);
-  const containerRef = useRef(null);
-  const [isMaximized, setIsMaximized] = React.useState(false);
-  const [isMinimized, setIsMinimized] = React.useState(false);
+type EditorPaneProps = {
+  type: 'original' | 'formatted';
+};
+
+const EditorPane = ({ type }: EditorPaneProps) => {
+  const editorRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isMaximized, setIsMaximized] = React.useState<boolean>(false);
+  const [isMinimized, setIsMinimized] = React.useState<boolean>(false);
   
   const { 
     originalCode, 
@@ -41,10 +49,13 @@ const EditorPane = ({ type }) => {
 
   // Initialize Monaco Editor
   useEffect(() => {
+    let monacoInstance: any = null;
+    let script: HTMLScriptElement | null = null;
+
     const initMonaco = async () => {
-      if (!monaco) {
+      if (!window.monaco) {
         // Load Monaco Editor
-        const script = document.createElement('script');
+        script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
         document.head.appendChild(script);
         
@@ -56,24 +67,25 @@ const EditorPane = ({ type }) => {
           });
           
           window.require(['vs/editor/editor.main'], () => {
-            monaco = window.monaco;
+            monacoInstance = window.monaco;
             createEditor();
           });
         };
       } else {
+        monacoInstance = window.monaco;
         createEditor();
       }
     };
 
     const createEditor = () => {
-      if (containerRef.current && monaco) {
+      if (containerRef.current && monacoInstance) {
         // Dispose existing editor
         if (editorRef.current) {
           editorRef.current.dispose();
         }
 
         // Create new editor
-        editorRef.current = monaco.editor.create(containerRef.current, {
+        editorRef.current = monacoInstance.editor.create(containerRef.current, {
           value: code,
           language: currentLanguage,
           theme: getMonacoTheme(currentTheme),
@@ -125,6 +137,9 @@ const EditorPane = ({ type }) => {
       if (editorRef.current) {
         editorRef.current.dispose();
       }
+      if (script) {
+        document.head.removeChild(script);
+      }
     };
   }, []);
 
@@ -137,15 +152,15 @@ const EditorPane = ({ type }) => {
 
   // Update language
   useEffect(() => {
-    if (editorRef.current && monaco) {
-      monaco.editor.setModelLanguage(editorRef.current.getModel(), currentLanguage);
+    if (editorRef.current && window.monaco) {
+      window.monaco.editor.setModelLanguage(editorRef.current.getModel(), currentLanguage);
     }
   }, [currentLanguage]);
 
   // Update theme
   useEffect(() => {
-    if (monaco) {
-      monaco.editor.setTheme(getMonacoTheme(currentTheme));
+    if (window.monaco) {
+      window.monaco.editor.setTheme(getMonacoTheme(currentTheme));
     }
   }, [currentTheme]);
 
@@ -184,23 +199,22 @@ const EditorPane = ({ type }) => {
     }
   };
 
-const getMonacoTheme = (theme: string): string => {
-  const themeMap: Record<string, string> = {
-    default: 'vs-dark',
-    dark: 'vs-dark',
-    light: 'vs',
-    dracula: 'vs-dark',
-    frankenstein: 'vs-dark',
-    mummy: 'vs-dark',
-    werewolf: 'vs-dark',
-    phantom: 'vs-dark',
-    dorian: 'vs-dark',
-    witch: 'vs-dark',
+  const getMonacoTheme = (theme: string): string => {
+    const themeMap: Record<string, string> = {
+      default: 'vs-dark',
+      dark: 'vs-dark',
+      light: 'vs',
+      dracula: 'vs-dark',
+      frankenstein: 'vs-dark',
+      mummy: 'vs-dark',
+      werewolf: 'vs-dark',
+      phantom: 'vs-dark',
+      dorian: 'vs-dark',
+      witch: 'vs-dark',
+    };
+
+    return themeMap[theme] || 'vs-dark';
   };
-
-  return themeMap[theme] || 'vs-dark';
-};
-
 
   if (isMinimized) {
     return (

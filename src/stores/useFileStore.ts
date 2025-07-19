@@ -1,7 +1,42 @@
 import { create } from 'zustand';
 
-const useFileStore = create((set, get) => ({
-  // File management state
+export interface CodeFile {
+  id: string;
+  name: string;
+  language: string;
+  content: string;
+  modified: boolean;
+  created: number;
+}
+
+interface FileStoreState {
+  files: CodeFile[];
+  activeFileId: string | null;
+  fileCounter: number;
+  projectName: string;
+  lastSaved: number | null;
+  autoSave: boolean;
+}
+
+interface FileStoreActions {
+  addFile: (file: Partial<CodeFile>) => string;
+  removeFile: (fileId: string) => void;
+  updateFile: (fileId: string, updates: Partial<CodeFile>) => void;
+  setActiveFile: (fileId: string) => void;
+  getActiveFile: () => CodeFile | undefined;
+  getAllFiles: () => CodeFile[];
+  createNewFile: (name: string, language?: string) => string;
+  importFiles: (fileList: FileList) => Promise<string[]>;
+  exportFile: (fileId: string, format?: string) => void;
+  exportAllFiles: () => void;
+  saveProject: () => void;
+  loadProject: () => boolean;
+  setProjectName: (name: string) => void;
+}
+
+type FileStore = FileStoreState & FileStoreActions;
+
+const useFileStore = create<FileStore>((set, get) => ({
   files: [
     {
       id: '1',
@@ -17,19 +52,16 @@ const sum = numbers.reduce((acc, num) => acc + num, 0);
 console.log('Sum:', sum);`,
       modified: false,
       created: Date.now(),
-    }
+    },
   ],
   activeFileId: '1',
   fileCounter: 1,
-  
-  // Project state
   projectName: 'Untitled Project',
   lastSaved: null,
   autoSave: true,
-  
-  // Actions
+
   addFile: (file) => {
-    const newFile = {
+    const newFile: CodeFile = {
       id: Date.now().toString(),
       name: file.name || `untitled-${get().fileCounter + 1}.txt`,
       language: file.language || 'text',
@@ -37,55 +69,49 @@ console.log('Sum:', sum);`,
       modified: false,
       created: Date.now(),
     };
-    
-    set(state => ({
+
+    set((state) => ({
       files: [...state.files, newFile],
       activeFileId: newFile.id,
       fileCounter: state.fileCounter + 1,
     }));
-    
+
     return newFile.id;
   },
-  
+
   removeFile: (fileId) => {
     const { files, activeFileId } = get();
-    const newFiles = files.filter(f => f.id !== fileId);
-    
-    let newActiveId = activeFileId;
-    if (activeFileId === fileId && newFiles.length > 0) {
-      newActiveId = newFiles[0].id;
-    }
-    
+    const newFiles = files.filter((f) => f.id !== fileId);
+
+    const newActiveId = activeFileId === fileId && newFiles.length > 0 ? newFiles[0].id : activeFileId;
+
     set({
       files: newFiles,
       activeFileId: newActiveId,
     });
   },
-  
+
   updateFile: (fileId, updates) => {
-    set(state => ({
-      files: state.files.map(file =>
-        file.id === fileId
-          ? { ...file, ...updates, modified: true }
-          : file
+    set((state) => ({
+      files: state.files.map((file) =>
+        file.id === fileId ? { ...file, ...updates, modified: true } : file
       ),
     }));
   },
-  
+
   setActiveFile: (fileId) => {
     set({ activeFileId: fileId });
   },
-  
+
   getActiveFile: () => {
     const { files, activeFileId } = get();
-    return files.find(f => f.id === activeFileId);
+    return files.find((f) => f.id === activeFileId);
   },
-  
+
   getAllFiles: () => get().files,
-  
-  // File operations
+
   createNewFile: (name, language = 'text') => {
-    const templates = {
+    const templates: Record<string, string> = {
       html: `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -144,43 +170,43 @@ Welcome to your new Markdown file!
 console.log('Hello from Markdown!');
 \`\`\``,
     };
-    
+
     const content = templates[language] || `// New ${language} file\n`;
-    
+
     return get().addFile({
       name: name || `untitled.${getFileExtension(language)}`,
       language,
       content,
     });
   },
-  
+
   importFiles: async (fileList) => {
-    const importedFiles = [];
-    
-    for (const file of fileList) {
+    const importedFiles: string[] = [];
+
+    for (const file of Array.from(fileList)) {
       try {
         const content = await readFileAsText(file);
         const language = detectLanguageFromFilename(file.name);
-        
+
         const fileId = get().addFile({
           name: file.name,
           language,
           content,
         });
-        
+
         importedFiles.push(fileId);
       } catch (error) {
         console.error('Error importing file:', file.name, error);
       }
     }
-    
+
     return importedFiles;
   },
-  
+
   exportFile: (fileId, format = 'text') => {
-    const file = get().files.find(f => f.id === fileId);
+    const file = get().files.find((f) => f.id === fileId);
     if (!file) return;
-    
+
     const blob = new Blob([file.content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -191,15 +217,14 @@ console.log('Hello from Markdown!');
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   },
-  
+
   exportAllFiles: () => {
     const { files } = get();
-    
-    // Create a zip-like structure (simplified)
-    const allContent = files.map(file => 
-      `// File: ${file.name}\n${file.content}\n\n`
-    ).join('---\n\n');
-    
+
+    const allContent = files
+      .map((file) => `// File: ${file.name}\n${file.content}\n\n`)
+      .join('---\n\n');
+
     const blob = new Blob([allContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -210,8 +235,7 @@ console.log('Hello from Markdown!');
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   },
-  
-  // Project operations
+
   saveProject: () => {
     const { files, projectName } = get();
     const projectData = {
@@ -219,11 +243,11 @@ console.log('Hello from Markdown!');
       files,
       saved: Date.now(),
     };
-    
+
     localStorage.setItem('beautifier-project', JSON.stringify(projectData));
     set({ lastSaved: Date.now() });
   },
-  
+
   loadProject: () => {
     try {
       const saved = localStorage.getItem('beautifier-project');
@@ -242,26 +266,25 @@ console.log('Hello from Markdown!');
     }
     return false;
   },
-  
+
   setProjectName: (name) => {
     set({ projectName: name });
   },
 }));
 
-// Helper functions
-function readFileAsText(file) {
+// Helpers
+function readFileAsText(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
+    reader.onload = (e) => resolve(e.target?.result as string);
     reader.onerror = (e) => reject(e);
     reader.readAsText(file);
   });
 }
 
-function detectLanguageFromFilename(filename) {
+function detectLanguageFromFilename(filename: string): string {
   const extension = filename.split('.').pop()?.toLowerCase();
-  
-  const extensionMap = {
+  const extensionMap: Record<string, string> = {
     js: 'javascript',
     jsx: 'javascript',
     ts: 'typescript',
@@ -285,12 +308,12 @@ function detectLanguageFromFilename(filename) {
     sh: 'shell',
     bash: 'shell',
   };
-  
-  return extensionMap[extension] || 'text';
+
+  return extensionMap[extension || ''] || 'text';
 }
 
-function getFileExtension(language) {
-  const extensionMap = {
+function getFileExtension(language: string): string {
+  const extensionMap: Record<string, string> = {
     javascript: 'js',
     typescript: 'ts',
     html: 'html',
@@ -304,7 +327,7 @@ function getFileExtension(language) {
     sql: 'sql',
     shell: 'sh',
   };
-  
+
   return extensionMap[language] || 'txt';
 }
 

@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Sparkles, Command, Settings, Moon, Sun, Monitor } from 'lucide-react';
+import { Sparkles, Command, Settings, Moon, Sun, Monitor, LucideIcon } from 'lucide-react';
 import useEditorStore from '@/stores/useEditorStore';
 import useFileStore from '@/stores/useFileStore';
 
-const Header = () => {
+const Header: React.FC = () => {
   const { 
     currentTheme, 
     setCurrentTheme, 
@@ -18,18 +18,25 @@ const Header = () => {
   
   const { projectName, files } = useFileStore();
 
-  const themes = [
+  interface ThemeOption {
+    value: string;
+    label: string;
+    icon: LucideIcon;
+  }
+
+  // Optimisation avec useMemo pour éviter les recréations inutiles
+  const themes = useMemo<ThemeOption[]>(() => [
     { value: 'default', label: 'Default', icon: Monitor },
     { value: 'dark', label: 'Dark', icon: Moon },
     { value: 'light', label: 'Light', icon: Sun },
     { value: 'dracula', label: 'Dracula', icon: Moon },
-    { value: 'frankenstein', label: 'frankenstein', icon: Sun },
-	{ value: 'mummy', label: 'mummy', icon: Moon },
-	{ value: 'werewolf', label: 'Werewolf', icon: Moon },
-	{ value: 'phantom', label: 'Phantom', icon: Moon },
-	{ value: 'dorian', label: 'Dorian Gray', icon: Sun },
-	{ value: 'witch', label: 'Witch', icon: Sun },
-  ];
+    { value: 'frankenstein', label: 'Frankenstein', icon: Sun },
+    { value: 'mummy', label: 'Mummy', icon: Moon },
+    { value: 'werewolf', label: 'Werewolf', icon: Moon },
+    { value: 'phantom', label: 'Phantom', icon: Moon },
+    { value: 'dorian', label: 'Dorian Gray', icon: Sun },
+    { value: 'witch', label: 'Witch', icon: Sun },
+  ], []);
 
   const handleFormatCode = () => {
     formatCode();
@@ -159,8 +166,8 @@ const Header = () => {
   );
 };
 
-function getLanguageColor(language) {
-  const colors = {
+function getLanguageColor(language: string): string {
+  const colors: Record<string, string> = {
     html: 'bg-orange-500',
     css: 'bg-blue-500',
     javascript: 'bg-yellow-500',

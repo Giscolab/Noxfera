@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, File, Search, Sparkles, FileText, Code, Braces, Download, Copy } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Search, Sparkles, Code } from 'lucide-react';
 import { LanguageSelector } from "@/components/DevTools/LanguageSelector";
 import { CodeActions } from "@/components/DevTools/CodeActions";
 import { Button } from "@/components/ui/button";
@@ -22,32 +22,24 @@ interface UltimateBeautifierSidebarProps {
 
 export function UltimateBeautifierSidebar({ collapsed, onToggleCollapse, advancedMode, onAdvancedModeChange }: UltimateBeautifierSidebarProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  
   const { 
     beautifyOptions, 
     setBeautifyOptions, 
     formatCode 
   } = useEditorStore();
   
-  const { files } = useFileStore();
-  
-  
-  
   const [indentSize, setIndentSize] = useState([beautifyOptions.indent_size]);
   const [braceStyle, setBraceStyle] = useState(beautifyOptions.brace_style);
   const [endWithNewline, setEndWithNewline] = useState(beautifyOptions.end_with_newline);
 
-  const handleOptionsChange = () => {
-    setBeautifyOptions({
-      ...beautifyOptions,
+  // Solution optimale : utiliser une fonction de mise à jour
+  useEffect(() => {
+    setBeautifyOptions(prevOptions => ({
+      ...prevOptions,
       indent_size: indentSize[0],
       brace_style: braceStyle,
       end_with_newline: endWithNewline,
-    });
-  };
-
-  React.useEffect(() => {
-    handleOptionsChange();
+    }));
   }, [indentSize, braceStyle, endWithNewline]);
 
   return (

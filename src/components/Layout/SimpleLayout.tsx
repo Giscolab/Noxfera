@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles } from 'lucide-react';
 
-const SimpleLayout = () => {
+const SimpleLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-background text-foreground p-8">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -91,7 +91,7 @@ function example() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6 text-center">
               <div className="text-3xl mb-3">⚡</div>
@@ -101,7 +101,7 @@ function example() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6 text-center">
               <div className="text-3xl mb-3">🎨</div>

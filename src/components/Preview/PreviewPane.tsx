@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -13,8 +13,25 @@ import {
 } from 'lucide-react';
 import useEditorStore from '@/stores/useEditorStore';
 
+interface DiffStats {
+  added: number;
+  removed: number;
+}
+
+interface DiffViewerProps {
+  original: string;
+  formatted: string;
+  stats: DiffStats;
+}
+
+interface LogEntry {
+  type: 'info' | 'success' | 'warning' | 'error';
+  message: string;
+  timestamp: number;
+}
+
 const PreviewPane = () => {
-  const iframeRef = useRef(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const { 
     formattedCode, 
     originalCode, 
@@ -23,8 +40,8 @@ const PreviewPane = () => {
     setActiveTab 
   } = useEditorStore();
 
-  const [previewError, setPreviewError] = React.useState(null);
-  const [diffStats, setDiffStats] = React.useState({ added: 0, removed: 0 });
+  const [previewError, setPreviewError] = React.useState<string | null>(null);
+  const [diffStats, setDiffStats] = React.useState<DiffStats>({ added: 0, removed: 0 });
 
   // Update preview when code changes
   useEffect(() => {
@@ -36,14 +53,15 @@ const PreviewPane = () => {
     if (currentLanguage === 'html' && iframeRef.current) {
       try {
         const iframe = iframeRef.current;
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
         
-        doc.open();
-        doc.write(formattedCode || originalCode);
-        doc.close();
-        
-        setPreviewError(null);
-      } catch (error) {
+        if (doc) {
+          doc.open();
+          doc.write(formattedCode || originalCode || '');
+          doc.close();
+          setPreviewError(null);
+        }
+      } catch (error: any) {
         setPreviewError(error.message);
       }
     }
@@ -87,7 +105,7 @@ const PreviewPane = () => {
 
   const handleOpenExternal = () => {
     if (currentLanguage === 'html') {
-      const blob = new Blob([formattedCode || originalCode], { type: 'text/html' });
+      const blob = new Blob([formattedCode || originalCode || ''], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank');
     }
@@ -203,8 +221,8 @@ const PreviewPane = () => {
             
             <TabsContent value="diff" className="h-full mt-0">
               <DiffViewer 
-                original={originalCode} 
-                formatted={formattedCode}
+                original={originalCode || ''} 
+                formatted={formattedCode || ''}
                 stats={diffStats}
               />
             </TabsContent>
@@ -219,7 +237,7 @@ const PreviewPane = () => {
   );
 };
 
-const DiffViewer = ({ original, formatted, stats }) => {
+const DiffViewer = ({ original, formatted, stats }: DiffViewerProps) => {
   if (!original || !formatted) {
     return (
       <div className="h-full flex items-center justify-center">
@@ -287,28 +305,34 @@ const DiffViewer = ({ original, formatted, stats }) => {
   );
 };
 
-const ConsoleOutput = () => {
-  const [logs, setLogs] = React.useState([
+const MAX_LOGS = 100;
+
+const ConsoleOutput = memo(function ConsoleOutput() {
+  const [logs, setLogs] = React.useState<LogEntry[]>([
     { type: 'info', message: 'noxfera initialized', timestamp: Date.now() },
     { type: 'success', message: 'Code formatting engine ready', timestamp: Date.now() + 1000 },
   ]);
 
   useEffect(() => {
-    // Simulate some console activity
     const interval = setInterval(() => {
       if (Math.random() > 0.8) {
-        setLogs(prev => [...prev, {
-          type: 'info',
-          message: `Auto-save completed at ${new Date().toLocaleTimeString()}`,
-          timestamp: Date.now()
-        }]);
+        setLogs(prev => {
+          const newLog = {
+            type: 'info',
+            message: `Auto-save completed at ${new Date().toLocaleTimeString()}`,
+            timestamp: Date.now()
+          };
+          // Garder seulement les MAX_LOGS derniers logs
+          const updatedLogs = [...prev, newLog];
+          return updatedLogs.slice(-MAX_LOGS);
+        });
       }
     }, 10000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const getLogIcon = (type) => {
+  const getLogIcon = (type: LogEntry['type']) => {
     switch (type) {
       case 'error': return '❌';
       case 'warning': return '⚠️';
@@ -317,7 +341,7 @@ const ConsoleOutput = () => {
     }
   };
 
-  const getLogColor = (type) => {
+  const getLogColor = (type: LogEntry['type']) => {
     switch (type) {
       case 'error': return 'text-red-400';
       case 'warning': return 'text-yellow-400';

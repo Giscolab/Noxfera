@@ -1,5 +1,3 @@
-console.log("✅ WelcomeOverlay.tsx chargé");
-
 import React from 'react';
 import { Sparkles, FileCode, ScanLine, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
