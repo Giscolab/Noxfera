@@ -6,7 +6,42 @@ type MinifiedCode = {
   js: string;
 };
 
-type CodeStats = {
+interface JSHintError {
+  reason: string;
+  line: number;
+  character: number;
+}
+
+interface ComplexityResult {
+  complexity: {
+    cyclomatic: number;
+    sloc: {
+      physical: number;
+      logical: number;
+    };
+    halstead: {
+      bugs: number;
+      difficulty: number;
+      effort: number;
+      length: number;
+      time: number;
+      vocabulary: number;
+      volume: number;
+    };
+  };
+  functions: Array<{
+    name: string;
+    complexity: {
+      cyclomatic: number;
+      sloc: {
+        physical: number;
+        logical: number;
+      };
+    };
+  }>;
+}
+
+interface CodeStats {
   lines: number;
   htmlLines: number;
   cssLines: number;
@@ -19,32 +54,32 @@ type CodeStats = {
   comments: number;
   commentRatio: number;
   maintainabilityIndex: number;
-  codeSmells: any[]; // à typiser plus tard si besoin
+  codeSmells: string[];
 };
 
-type DevToolsStore = {
+interface DevToolsStore {
   advancedMode: boolean;
   htmlCode: string;
   cssCode: string;
   jsCode: string;
-  jshintResults: any[]; // à affiner selon le type des résultats JSHint
+  jshintResults: JSHintError[];
   minifiedCode: MinifiedCode;
   obfuscatedCode: string;
-  complexityResults: any; // idem, à typiser si structure connue
+  complexityResults: ComplexityResult | null;
   codeStats: CodeStats;
 
   setAdvancedMode: (enabled: boolean) => void;
   setHtmlCode: (code: string) => void;
   setCssCode: (code: string) => void;
   setJsCode: (code: string) => void;
-  setJshintResults: (results: any[]) => void;
+  setJshintResults: (results: JSHintError[]) => void;
   setMinifiedCode: (code: MinifiedCode) => void;
   setObfuscatedCode: (code: string) => void;
-  setComplexityResults: (results: any) => void;
+  setComplexityResults: (results: ComplexityResult | null) => void;
   setCodeStats: (stats: CodeStats) => void;
   generatePreviewHTML: () => string;
   resetDevTools: () => void;
-};
+}
 
 const useDevToolsStore = create<DevToolsStore>((set, get) => ({
   advancedMode: false,

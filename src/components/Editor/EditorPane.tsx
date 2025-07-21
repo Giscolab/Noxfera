@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import type * as Monaco from 'monaco-editor';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,8 +18,11 @@ import useFileStore from '@/stores/useFileStore';
 // Déclaration des types pour Monaco
 declare global {
   interface Window {
-    monaco: any;
-    require: any;
+    monaco: typeof import('monaco-editor');
+    require: {
+      config: (options: Record<string, unknown>) => void;
+      (modules: string[], callback: () => void): void;
+    };
   }
 }
 
@@ -27,7 +31,7 @@ type EditorPaneProps = {
 };
 
 const EditorPane = ({ type }: EditorPaneProps) => {
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMaximized, setIsMaximized] = React.useState<boolean>(false);
   const [isMinimized, setIsMinimized] = React.useState<boolean>(false);
@@ -49,7 +53,7 @@ const EditorPane = ({ type }: EditorPaneProps) => {
 
   // Initialize Monaco Editor
   useEffect(() => {
-    let monacoInstance: any = null;
+    let monacoInstance: typeof Monaco | null = null;
     let script: HTMLScriptElement | null = null;
 
     const initMonaco = async () => {

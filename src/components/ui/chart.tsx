@@ -105,8 +105,11 @@ ChartStyle.displayName = "ChartStyle"
 const ChartTooltip = RechartsPrimitive.Tooltip
 
 // Helper pour extraire les valeurs de chaîne des objets
-const extractStringValue = (obj: any, key: string): string | undefined => {
-  if (obj && typeof obj === 'object' && key in obj && typeof obj[key] === 'string') {
+const extractStringValue = (
+  obj: Record<string, unknown> | undefined,
+  key: string
+): string | undefined => {
+  if (obj && key in obj && typeof obj[key] === 'string') {
     return obj[key]
   }
   return undefined

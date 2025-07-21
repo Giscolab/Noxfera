@@ -5,8 +5,6 @@ import { Activity, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
 import useEditorStore from '@/stores/useEditorStore';
 
 // Import dynamique avec fallback pour compatibilité navigateur
-let escomplex: any = null;
-let isComplexityAvailable = false;
 
 // Fallback pour escomplex qui ne marche pas en navigateur
 const performSimpleComplexityAnalysis = (code: string) => {
@@ -84,7 +82,8 @@ interface ComplexityResult {
 export function ComplexityPanel() {
   const originalCode = useEditorStore(state => state.originalCode);
   const currentLanguage = useEditorStore(state => state.currentLanguage);
-  const [complexityResults, setComplexityResults] = React.useState(null);
+  const [complexityResults, setComplexityResults] =
+    React.useState<ComplexityResult | null>(null);
 
   useEffect(() => {
     // Seulement analyser le code JavaScript/TypeScript

@@ -29,6 +29,18 @@ interface DevConsoleProps {
   onToggle: () => void;
 }
 
+interface DevConsoleAPI {
+  addMessage: (
+    level: ConsoleMessage['level'],
+    source: string,
+    message: string
+  ) => void;
+}
+
+interface DevConsoleWindow extends Window {
+  devConsole?: DevConsoleAPI;
+}
+
 export function DevConsole({ isOpen, onToggle }: DevConsoleProps) {
   const [messages, setMessages] = useState<ConsoleMessage[]>([]);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -71,10 +83,10 @@ export function DevConsole({ isOpen, onToggle }: DevConsoleProps) {
 
   // Exposer la fonction globalement pour les autres composants
   useEffect(() => {
-    (window as any).devConsole = { addMessage };
-    
+    (window as DevConsoleWindow).devConsole = { addMessage };
+
     return () => {
-      delete (window as any).devConsole;
+      delete (window as DevConsoleWindow).devConsole;
     };
   }, []);
 
@@ -231,8 +243,9 @@ export function DevConsole({ isOpen, onToggle }: DevConsoleProps) {
 // Hook pour utiliser la console de développement
 export function useDevConsole() {
   const addMessage = (level: ConsoleMessage['level'], source: string, message: string) => {
-    if ((window as any).devConsole) {
-      (window as any).devConsole.addMessage(level, source, message);
+    const win = window as DevConsoleWindow;
+    if (win.devConsole) {
+      win.devConsole.addMessage(level, source, message);
     }
   };
 
