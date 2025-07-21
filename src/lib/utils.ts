@@ -11,3 +11,11 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
+
+export function withDisplayName<T extends React.ComponentType<any>>(
+  Component: T,
+  displayName: string
+): T {
+  Component.displayName = displayName
+  return Component
+}

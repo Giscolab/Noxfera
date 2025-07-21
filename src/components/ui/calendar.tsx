@@ -5,17 +5,12 @@ import { DayPicker } from "react-day-picker"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
-  previousMonthLabel?: string
-  nextMonthLabel?: string
-}
+export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
-  previousMonthLabel = "Mois précédent",
-  nextMonthLabel = "Mois suivant",
   ...props
 }: CalendarProps) {
   return (
@@ -57,42 +52,8 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ..._props }) => (
-          <ChevronLeft 
-            className="h-4 w-4" 
-            aria-hidden="true" 
-          />
-        ),
-        IconRight: ({ ..._props }) => (
-          <ChevronRight 
-            className="h-4 w-4" 
-            aria-hidden="true" 
-          />
-        ),
-        NavButtonPrev: ({ ...navProps }) => (
-          <button
-            {...navProps}
-            aria-label={previousMonthLabel}
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute left-1"
-            )}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-        ),
-        NavButtonNext: ({ ...navProps }) => (
-          <button
-            {...navProps}
-            aria-label={nextMonthLabel}
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute right-1"
-            )}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        )
+        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
+        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
       }}
       {...props}
     />
