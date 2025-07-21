@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MonacoEditor } from '../Editor/MonacoEditor';
-import { Shield, Download, Copy, FileText, Settings, Palette } from 'lucide-react';
+import { Download, Copy, FileText, Palette } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import useEditorStore from '@/stores/useEditorStore';
 
-// Import dynamique pour JavaScript Obfuscator
-let JavaScriptObfuscator: any = null;
-let htmlMinifier: any = null;
-let CleanCSS: any = null;
+// Dynamic imports for heavy libraries
+type JavaScriptObfuscatorModule = typeof import('javascript-obfuscator');
+interface HtmlMinifierModule {
+  minify: (input: string, options?: Record<string, unknown>) => string;
+}
+
+let JavaScriptObfuscator: JavaScriptObfuscatorModule | null = null;
+let htmlMinifier: HtmlMinifierModule | null = null;
 
 if (typeof window !== 'undefined') {
   import('javascript-obfuscator').then(module => {
@@ -28,7 +31,6 @@ export function AdvancedObfuscation() {
   const { toast } = useToast();
   const { originalCode, currentLanguage } = useEditorStore();
   
-  const [activeTab, setActiveTab] = useState('js');
   const [obfuscatedContent, setObfuscatedContent] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [stats, setStats] = useState<{
@@ -139,6 +141,7 @@ export function AdvancedObfuscation() {
         duration: 2000,
       });
     } catch (error) {
+      console.error(error);
       toast({
         title: "Erreur",
         description: "Impossible de copier le code",

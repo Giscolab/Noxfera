@@ -127,10 +127,11 @@ skills: ["JavaScript", "React", "CSS"]
           case 'typescript':
             formatted = formatJavaScript(originalCode, beautifyOptions);
             break;
-          case 'json':
+          case 'json': {
             const parsed = JSON.parse(originalCode);
             formatted = JSON.stringify(parsed, null, beautifyOptions.indent_size);
             break;
+          }
           case 'yaml':
             formatted = formatYAML(originalCode, beautifyOptions);
             break;
@@ -140,8 +141,9 @@ skills: ["JavaScript", "React", "CSS"]
           default:
             formatted = originalCode;
         }
-      } catch (error: any) {
-        formatted = `// Error formatting code:\n// ${error.message}\n\n${originalCode}`;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        formatted = `// Error formatting code:\n// ${message}\n\n${originalCode}`;
       }
 
       set({ formattedCode: formatted, isFormatted: true });
@@ -196,7 +198,7 @@ skills: ["JavaScript", "React", "CSS"]
 
 // Formatter Functions – pas encore typés finement
 function formatHTML(code: string, options: BeautifyOptions): string {
-  let formatted = code.replace(/>\s+</g, '><');
+  const formatted = code.replace(/>\s+</g, '><');
   let indentLevel = 0;
   const indent = ' '.repeat(options.indent_size);
   const lines = formatted.split(/></);
@@ -233,8 +235,8 @@ function formatCSS(code: string, options: BeautifyOptions): string {
 
 function formatJavaScript(code: string, options: BeautifyOptions): string {
   const indent = ' '.repeat(options.indent_size);
-  let formatted = code
-    .replace(/([=+\-*\/])/g, ' $1 ')
+  const formatted = code
+    .replace(/([=+*/-])/g, ' $1 ')
     .replace(/\s+/g, ' ')
     .replace(/\{/g, options.brace_style === 'expand' ? '\n{\n' : ' {\n')
     .replace(/\}/g, '\n}\n')

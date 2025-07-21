@@ -11,3 +11,18 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
+
+/**
+ * Attache un displayName personnalisé à un composant React
+ * 
+ * @param Component - Le composant à modifier
+ * @param displayName - Le nom à attribuer
+ * @returns Le composant original avec son displayName mis à jour
+ */
+export function withDisplayName<P = Record<string, unknown>, T extends React.ComponentType<P>>(
+  Component: T,
+  displayName: string
+): T {
+  Component.displayName = displayName;
+  return Component;
+}

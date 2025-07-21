@@ -81,7 +81,10 @@ export function MonacoEditor({
 // Global type declaration for Monaco
 declare global {
   interface Window {
-    monaco: any;
-    require: any;
+    monaco: typeof import('monaco-editor');
+    require: {
+      config: (options: Record<string, unknown>) => void;
+      (modules: string[], callback: () => void): void;
+    };
   }
 }

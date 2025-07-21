@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import useEditorStore from '@/stores/useEditorStore';
 
 // Import dynamique pour éviter les erreurs SSR
-let JavaScriptObfuscator: any = null;
+type JavaScriptObfuscatorModule = typeof import('javascript-obfuscator');
+let JavaScriptObfuscator: JavaScriptObfuscatorModule | null = null;
 
 if (typeof window !== 'undefined') {
   import('javascript-obfuscator').then(module => {

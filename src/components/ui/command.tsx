@@ -20,15 +20,21 @@ const Command = React.forwardRef<
     {...props}
   />
 ));
-Command.displayName = "Command";
 
 // --- Dialog wrapper for command ---
-interface CommandDialogProps extends DialogProps {}
+type CommandDialogProps = DialogProps;
+
+const COMMAND_DIALOG_CLASSNAMES = 
+  "group [&_[data-cmdk-group-heading]]:px-2 [&_[data-cmdk-group-heading]]:font-medium " +
+  "[&_[data-cmdk-group-heading]]:text-muted-foreground [&_[data-cmdk-group]:not([hidden])_~[data-cmdk-group]]:pt-0 " +
+  "[&_[data-cmdk-group]]:px-2 [&_[data-cmdk-input-wrapper]_svg]:h-5 [&_[data-cmdk-input-wrapper]_svg]:w-5 " +
+  "[&_[data-cmdk-input]]:h-12 [&_[data-cmdk-item]]:px-2 [&_[data-cmdk-item]]:py-3 " +
+  "[&_[data-cmdk-item]_svg]:h-5 [&_[data-cmdk-item]_svg]:w-5";
 
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => (
   <Dialog {...props}>
     <DialogContent className="overflow-hidden p-0 shadow-xl">
-      <Command className="group [&_[data-cmdk-group-heading]]:px-2 [&_[data-cmdk-group-heading]]:font-medium [&_[data-cmdk-group-heading]]:text-muted-foreground [&_[data-cmdk-group]:not([hidden])_~[data-cmdk-group]]:pt-0 [&_[data-cmdk-group]]:px-2 [&_[data-cmdk-input-wrapper]_svg]:h-5 [&_[data-cmdk-input-wrapper]_svg]:w-5 [&_[data-cmdk-input]]:h-12 [&_[data-cmdk-item]]:px-2 [&_[data-cmdk-item]]:py-3 [&_[data-cmdk-item]_svg]:h-5 [&_[data-cmdk-item]_svg]:w-5">
+      <Command className={COMMAND_DIALOG_CLASSNAMES}>
         {children}
       </Command>
     </DialogContent>
@@ -58,7 +64,6 @@ const CommandInput = React.forwardRef<
     />
   </div>
 ));
-CommandInput.displayName = "CommandInput";
 
 // --- Debounced input ---
 type DebouncedCommandInputProps = Omit<
@@ -101,7 +106,6 @@ const DebouncedCommandInput = React.forwardRef<
     />
   );
 });
-DebouncedCommandInput.displayName = "DebouncedCommandInput";
 
 // --- List, Group, Item, etc. ---
 const CommandList = React.forwardRef<
@@ -114,7 +118,6 @@ const CommandList = React.forwardRef<
     {...props}
   />
 ));
-CommandList.displayName = "CommandList";
 
 const CommandEmpty = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Empty>,
@@ -126,7 +129,6 @@ const CommandEmpty = React.forwardRef<
     {...props}
   />
 ));
-CommandEmpty.displayName = "CommandEmpty";
 
 const CommandGroup = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Group>,
@@ -135,13 +137,14 @@ const CommandGroup = React.forwardRef<
   <CommandPrimitive.Group
     ref={ref}
     className={cn(
-      "overflow-hidden p-1 text-foreground [&_[data-cmdk-group-heading]]:px-2 [&_[data-cmdk-group-heading]]:py-1.5 [&_[data-cmdk-group-heading]]:text-xs [&_[data-cmdk-group-heading]]:font-medium [&_[data-cmdk-group-heading]]:text-muted-foreground",
+      "overflow-hidden p-1 text-foreground [&_[data-cmdk-group-heading]]:px-2 [&_[data-cmdk-group-heading]]:py-1.5 " +
+      "[&_[data-cmdk-group-heading]]:text-xs [&_[data-cmdk-group-heading]]:font-medium " +
+      "[&_[data-cmdk-group-heading]]:text-muted-foreground",
       className
     )}
     {...props}
   />
 ));
-CommandGroup.displayName = "CommandGroup";
 
 const CommandItem = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Item>,
@@ -158,7 +161,6 @@ const CommandItem = React.forwardRef<
     {...props}
   />
 ));
-CommandItem.displayName = "CommandItem";
 
 const CommandSeparator = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Separator>,
@@ -170,7 +172,6 @@ const CommandSeparator = React.forwardRef<
     {...props}
   />
 ));
-CommandSeparator.displayName = "CommandSeparator";
 
 const CommandShortcut = ({
   className,
@@ -181,6 +182,17 @@ const CommandShortcut = ({
     {...props}
   />
 );
+
+// Display name assignments
+Command.displayName = "Command";
+CommandDialog.displayName = "CommandDialog";
+CommandInput.displayName = "CommandInput";
+DebouncedCommandInput.displayName = "DebouncedCommandInput";
+CommandList.displayName = "CommandList";
+CommandEmpty.displayName = "CommandEmpty";
+CommandGroup.displayName = "CommandGroup";
+CommandItem.displayName = "CommandItem";
+CommandSeparator.displayName = "CommandSeparator";
 CommandShortcut.displayName = "CommandShortcut";
 
 export {

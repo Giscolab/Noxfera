@@ -61,8 +61,9 @@ const PreviewPane = () => {
           doc.close();
           setPreviewError(null);
         }
-      } catch (error: any) {
-        setPreviewError(error.message);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        setPreviewError(message);
       }
     }
   };
