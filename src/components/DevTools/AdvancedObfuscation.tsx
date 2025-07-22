@@ -12,16 +12,16 @@ interface HtmlMinifierModule {
   minify: (input: string, options?: Record<string, unknown>) => string;
 }
 
-let JavaScriptObfuscator: JavaScriptObfuscatorModule | null = null;
-let htmlMinifier: HtmlMinifierModule | null = null;
+const JavaScriptObfuscator: { current: JavaScriptObfuscatorModule | null } = { current: null };
+const htmlMinifier: { current: HtmlMinifierModule | null } = { current: null };
 
 if (typeof window !== 'undefined') {
   import('javascript-obfuscator').then(module => {
-    JavaScriptObfuscator = module.default;
+    JavaScriptObfuscator.current = module.default;
   });
   
   import('html-minifier-terser').then(module => {
-    htmlMinifier = module.minify;
+    htmlMinifier.current = module;
   }).catch(() => {
     console.warn('html-minifier-terser not available');
   });
@@ -45,14 +45,14 @@ export function AdvancedObfuscation() {
     setIsProcessing(true);
     
     try {
-      let processed = '';
       const originalSize = originalCode.length;
+      let processed = '';
       
       switch (currentLanguage) {
         case 'javascript':
-        case 'typescript':
-          if (JavaScriptObfuscator) {
-            const result = JavaScriptObfuscator.obfuscate(originalCode, {
+        case 'typescript': {
+          if (JavaScriptObfuscator.current) {
+            const result = JavaScriptObfuscator.current.obfuscate(originalCode, {
               compact: true,
               controlFlowFlattening: true,
               controlFlowFlatteningThreshold: 0.8,
@@ -68,10 +68,11 @@ export function AdvancedObfuscation() {
             processed = result.getObfuscatedCode();
           }
           break;
-          
-        case 'html':
-          if (htmlMinifier?.minify) {
-            processed = htmlMinifier.minify(originalCode, {
+        }
+           
+        case 'html': {
+          if (htmlMinifier.current?.minify) {
+            processed = htmlMinifier.current.minify(originalCode, {
               removeAttributeQuotes: true,
               removeComments: true,
               removeRedundantAttributes: true,
@@ -85,22 +86,12 @@ export function AdvancedObfuscation() {
             });
           }
           break;
+        }
           
-        case 'css':
-          // Simulation de minification CSS
-          processed = originalCode
-            .replace(/\/\*.*?\*\//g, '') // Supprimer commentaires
-            .replace(/\s+/g, ' ') // Réduire espaces
-            .replace(/;\s*}/g, '}') // Optimiser 
-            .replace(/\s*{\s*/g, '{')
-            .replace(/\s*}\s*/g, '}')
-            .replace(/\s*;\s*/g, ';')
-            .replace(/\s*:\s*/g, ':')
-            .trim();
-          break;
-          
-        default:
+        default: {
           processed = originalCode;
+          break;
+        }
       }
       
       const processedSize = processed.length;

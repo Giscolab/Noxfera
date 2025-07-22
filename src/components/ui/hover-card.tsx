@@ -256,7 +256,7 @@ const HoverCardIcon = ({
     className
   )}>
     {React.isValidElement(icon) 
-      ? React.cloneElement(icon, { className: "w-5 h-5" } as any)
+      ? React.cloneElement(icon, { className: "w-5 h-5" } as React.HTMLAttributes<HTMLElement>)
       : icon}
   </div>
 )

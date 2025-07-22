@@ -10,11 +10,11 @@ import useEditorStore from '@/stores/useEditorStore';
 
 // Import dynamique pour éviter les erreurs SSR
 type JavaScriptObfuscatorModule = typeof import('javascript-obfuscator');
-let JavaScriptObfuscator: JavaScriptObfuscatorModule | null = null;
+const JavaScriptObfuscator: { current: JavaScriptObfuscatorModule | null } = { current: null };
 
 if (typeof window !== 'undefined') {
   import('javascript-obfuscator').then(module => {
-    JavaScriptObfuscator = module.default;
+    JavaScriptObfuscator.current = module.default;
   });
 }
 

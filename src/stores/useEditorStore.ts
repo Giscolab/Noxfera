@@ -113,84 +113,91 @@ skills: ["JavaScript", "React", "CSS"]
     formatCode: () => {
       const state = get();
       const { originalCode, currentLanguage, beautifyOptions } = state;
-      let formatted = originalCode;
+      const formatted = { current: originalCode };
 
       try {
         switch (currentLanguage) {
-          case 'html':
-            formatted = formatHTML(originalCode, beautifyOptions);
-            break;
-          case 'css':
-            formatted = formatCSS(originalCode, beautifyOptions);
-            break;
-          case 'javascript':
-          case 'typescript':
-            formatted = formatJavaScript(originalCode, beautifyOptions);
-            break;
-          case 'json': {
-            const parsed = JSON.parse(originalCode);
-            formatted = JSON.stringify(parsed, null, beautifyOptions.indent_size);
+          case 'html': {
+            formatted.current = formatHTML(originalCode, beautifyOptions);
             break;
           }
-          case 'yaml':
-            formatted = formatYAML(originalCode, beautifyOptions);
+          case 'css': {
+            formatted.current = formatCSS(originalCode, beautifyOptions);
             break;
-          case 'markdown':
-            formatted = formatMarkdown(originalCode);
+          }
+          case 'javascript':
+          case 'typescript': {
+            formatted.current = formatJavaScript(originalCode, beautifyOptions);
             break;
-          default:
-            formatted = originalCode;
+          }
+          case 'json': {
+            const parsed = JSON.parse(originalCode);
+            formatted.current = JSON.stringify(parsed, null, beautifyOptions.indent_size);
+            break;
+          }
+          case 'yaml': {
+            formatted.current = formatYAML(originalCode, beautifyOptions);
+            break;
+          }
+          case 'markdown': {
+            formatted.current = formatMarkdown(originalCode);
+            break;
+          }
+          default: {
+            formatted.current = originalCode;
+            break;
+          }
         }
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        formatted = `// Error formatting code:\n// ${message}\n\n${originalCode}`;
+        formatted.current = `// Error formatting code:\n// ${message}\n\n${originalCode}`;
       }
 
-      set({ formattedCode: formatted, isFormatted: true });
+      set({ formattedCode: formatted.current, isFormatted: true });
     },
     detectLanguage: (code: string) => {
-      let language = 'text';
+      const language = { current: 'text' };
       const trimmedCode = code.trim().toLowerCase();
 
       if (trimmedCode.startsWith('<!doctype') || trimmedCode.startsWith('<html')) {
-        language = 'html';
+        language.current = 'html';
       } else if (trimmedCode.startsWith('<') && trimmedCode.includes('</')) {
-        language = 'html';
+        language.current = 'html';
       } else if (trimmedCode.startsWith('{') || trimmedCode.startsWith('[')) {
         try {
           JSON.parse(code);
-          language = 'json';
+          language.current = 'json';
         } catch {
           if (code.includes('function') || code.includes('=>') || code.includes('const')) {
-            language = 'javascript';
+            language.current = 'javascript';
           }
         }
       } else if (code.includes('import ') && code.includes('from ')) {
         if (code.includes('interface ') || code.includes(': string')) {
-          language = 'typescript';
+          language.current = 'typescript';
         } else {
-          language = 'javascript';
+          language.current = 'javascript';
         }
       } else if (code.includes('def ') || (code.includes('import ') && code.includes('print('))) {
-        language = 'python';
+        language.current = 'python';
       } else if (code.includes('#include') || code.includes('int main(')) {
-        language = 'cpp';
+        language.current = 'cpp';
       } else if (code.includes('public class') || code.includes('System.out.')) {
-        language = 'java';
+        language.current = 'java';
       } else if (code.includes('@media') || (code.includes('selector') && code.includes('{'))) {
-        language = 'css';
-      } else if (code.includes('function') || code.includes('let ') || code.includes('=>')) {
-        language = 'javascript';
+        language.current = 'css';
+      } else if (code.includes('function') || code.includes('const ') || code.includes('=>')) {
+        language.current = 'javascript';
       } else if (code.includes('---\n') || code.includes('name:') || code.includes('version:')) {
-        language = 'yaml';
+        language.current = 'yaml';
       } else if (code.includes('# ') && code.includes('\n')) {
-        language = 'markdown';
+        language.current = 'markdown';
       } else if (code.includes('SELECT ') || code.includes('FROM ') || code.includes('INSERT ')) {
-        language = 'sql';
+        language.current = 'sql';
       }
 
-      set({ currentLanguage: language });
-      return language;
+      set({ currentLanguage: language.current });
+      return language.current;
     },
     setLanguageManually: lang => set({ currentLanguage: lang }),
   }))
@@ -199,7 +206,7 @@ skills: ["JavaScript", "React", "CSS"]
 // Formatter Functions – pas encore typés finement
 function formatHTML(code: string, options: BeautifyOptions): string {
   const formatted = code.replace(/>\s+</g, '><');
-  let indentLevel = 0;
+  const indentLevel = { current: 0 };
   const indent = ' '.repeat(options.indent_size);
   const lines = formatted.split(/></);
   const result: string[] = [];
@@ -208,9 +215,9 @@ function formatHTML(code: string, options: BeautifyOptions): string {
     let line = lines[i];
     if (i > 0) line = '<' + line;
     if (i < lines.length - 1) line = line + '>';
-    if (line.includes('</') && !line.includes(`</${line.split('</')[1].split('>')[0]}>`)) indentLevel--;
-    result.push(indent.repeat(Math.max(0, indentLevel)) + line.trim());
-    if (line.includes('<') && !line.includes('</') && !line.includes('/>')) indentLevel++;
+    if (line.includes('</') && !line.includes(`</${line.split('</')[1].split('>')[0]}>`)) indentLevel.current--;
+    result.push(indent.repeat(Math.max(0, indentLevel.current)) + line.trim());
+    if (line.includes('<') && !line.includes('</') && !line.includes('/>')) indentLevel.current++;
   }
 
   return result.join('\n');
@@ -242,15 +249,15 @@ function formatJavaScript(code: string, options: BeautifyOptions): string {
     .replace(/\}/g, '\n}\n')
     .replace(/;/g, ';\n');
 
-  let indentLevel = 0;
+  const indentLevel = { current: 0 };
   return formatted
     .split('\n')
     .map(line => {
       const trimmed = line.trim();
       if (trimmed === '') return '';
-      if (trimmed.includes('}')) indentLevel = Math.max(0, indentLevel - 1);
-      const result = indent.repeat(indentLevel) + trimmed;
-      if (trimmed.includes('{')) indentLevel++;
+      if (trimmed.includes('}')) indentLevel.current = Math.max(0, indentLevel.current - 1);
+      const result = indent.repeat(indentLevel.current) + trimmed;
+      if (trimmed.includes('{')) indentLevel.current++;
       return result;
     })
     .join('\n')

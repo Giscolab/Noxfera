@@ -35,13 +35,13 @@ interface State {
 
 // 🧠 State global et listeners
 const listeners: Array<(state: State) => void> = [];
-let memoryState: State = { toasts: [] };
+const memoryState: { current: State } = { current: { toasts: [] } };
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
-let count = 0;
+const count = { current: 0 };
 function genId(): string {
-  count = (count + 1) % Number.MAX_SAFE_INTEGER;
-  return count.toString();
+  count.current = (count.current + 1) % Number.MAX_SAFE_INTEGER;
+  return count.current.toString();
 }
 
 // 🧹 File d’attente pour suppression automatique

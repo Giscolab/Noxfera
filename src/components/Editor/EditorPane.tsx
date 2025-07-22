@@ -53,30 +53,32 @@ const EditorPane = ({ type }: EditorPaneProps) => {
 
   // Initialize Monaco Editor
   useEffect(() => {
-    let monacoInstance: typeof Monaco | null = null;
-    let script: HTMLScriptElement | null = null;
+    const monacoInstance: { current: typeof Monaco | null } = { current: null };
+    const script: { current: HTMLScriptElement | null } = { current: null };
 
     const initMonaco = async () => {
       if (!window.monaco) {
         // Load Monaco Editor
         script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
-        document.head.appendChild(script);
+        document.head.appendChild(script.current);
         
-        script.onload = () => {
+        script.current.onload = () => {
+          // @ts-expect-error - window.require is added by Monaco
           window.require.config({ 
             paths: { 
               'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' 
             } 
           });
           
+          // @ts-expect-error - window.require is added by Monaco
           window.require(['vs/editor/editor.main'], () => {
-            monacoInstance = window.monaco;
+            monacoInstance.current = window.monaco;
             createEditor();
           });
         };
       } else {
-        monacoInstance = window.monaco;
+        monacoInstance.current = window.monaco;
         createEditor();
       }
     };

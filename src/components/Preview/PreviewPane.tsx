@@ -79,8 +79,7 @@ const PreviewPane = () => {
     
     // Simple diff calculation
     const maxLines = Math.max(originalLines.length, formattedLines.length);
-    let added = 0;
-    let removed = 0;
+    const stats = { added: 0, removed: 0 };
 
     for (let i = 0; i < maxLines; i++) {
       const originalLine = originalLines[i] || '';
