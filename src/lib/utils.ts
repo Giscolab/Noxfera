@@ -19,7 +19,7 @@ export function cn(...inputs: ClassValue[]): string {
  * @param displayName - Le nom à attribuer
  * @returns Le composant original avec son displayName mis à jour
  */
-export function withDisplayName<P = Record<string, unknown>, T extends React.ComponentType<P>>(
+export function withDisplayName<T extends React.ComponentType<Record<string, unknown>>>(
   Component: T,
   displayName: string
 ): T {

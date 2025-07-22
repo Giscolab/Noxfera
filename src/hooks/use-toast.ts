@@ -100,13 +100,13 @@ export const reducer = (state: State, action: Action): State => {
 
 // 📣 Dispatch global
 function dispatch(action: Action) {
-  memoryState = reducer(memoryState, action);
-  listeners.forEach((listener) => listener(memoryState));
+  memoryState.current = reducer(memoryState.current, action);
+  listeners.forEach((listener) => listener(memoryState.current));
 }
 
 // 🧪 Hook principal : useToast
 function useToast() {
-  const [state, setState] = React.useState<State>(memoryState);
+  const [state, setState] = React.useState<State>(memoryState.current);
 
   React.useEffect(() => {
     listeners.push(setState);

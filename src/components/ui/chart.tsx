@@ -356,8 +356,8 @@ function getPayloadConfigFromPayload(
       : undefined
 
   // Utilisation du helper d'extraction
-  const fromPayload = extractStringValue(payload, key)
-  const fromInner = extractStringValue(payloadPayload, key)
+  const fromPayload = extractStringValue(payload as Record<string, unknown>, key)
+  const fromInner = extractStringValue(payloadPayload as Record<string, unknown>, key)
   const configLabelKey = fromPayload || fromInner || key
 
   return config[configLabelKey as keyof typeof config] || config[key as keyof typeof config]

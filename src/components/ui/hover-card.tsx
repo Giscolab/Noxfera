@@ -13,9 +13,8 @@ interface HoverCardProps extends HoverCardPrimitive.HoverCardProps {
 const HoverCard = React.forwardRef<
   React.ElementRef<typeof HoverCardPrimitive.Root>,
   HoverCardProps
->(({ openDelay = 200, closeDelay = 300, ...props }, ref) => (
+>(({ openDelay = 200, closeDelay = 300, ...props }, _ref) => (
   <HoverCardPrimitive.Root
-    ref={ref}
     openDelay={openDelay}
     closeDelay={closeDelay}
     {...props}
@@ -260,7 +259,7 @@ const HoverCardIcon = ({
       : icon}
   </div>
 )
-withDisplayName(HoverCardIcon, "HoverCardIcon")
+HoverCardIcon.displayName = "HoverCardIcon"
 
 // ======================== THUMBNAIL ========================
 const HoverCardThumbnail = ({

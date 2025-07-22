@@ -68,30 +68,6 @@ function Calendar({
             className="h-4 w-4" 
             aria-hidden="true" 
           />
-        ),
-        NavButtonPrev: ({ ...navProps }) => (
-          <button
-            {...navProps}
-            aria-label={previousMonthLabel}
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute left-1"
-            )}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-        ),
-        NavButtonNext: ({ ...navProps }) => (
-          <button
-            {...navProps}
-            aria-label={nextMonthLabel}
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute right-1"
-            )}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
         )
       }}
       {...props}

@@ -86,17 +86,17 @@ const PreviewPane = () => {
       const formattedLine = formattedLines[i] || '';
       
       if (originalLine !== formattedLine) {
-        if (!originalLine) added++;
-        else if (!formattedLine) removed++;
+        if (!originalLine) stats.added++;
+        else if (!formattedLine) stats.removed++;
         else {
           // Line changed - count as both added and removed
-          added++;
-          removed++;
+          stats.added++;
+          stats.removed++;
         }
       }
     }
 
-    setDiffStats({ added, removed });
+    setDiffStats(stats);
   };
 
   const handleRefresh = () => {

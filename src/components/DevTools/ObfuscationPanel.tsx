@@ -51,7 +51,7 @@ export function ObfuscationPanel() {
     setIsObfuscating(true);
     
     try {
-      const obfuscationResult = JavaScriptObfuscator.obfuscate(originalCode, {
+      const obfuscationResult = JavaScriptObfuscator.current?.obfuscate(originalCode, {
         compact: options.compact,
         controlFlowFlattening: options.controlFlowFlattening,
         controlFlowFlatteningThreshold: 0.75,
@@ -59,13 +59,13 @@ export function ObfuscationPanel() {
         deadCodeInjectionThreshold: 0.4,
         stringArray: options.stringArray,
         stringArrayThreshold: 0.75,
-        stringArrayEncoding: options.stringArrayEncoding,
+        stringArrayEncoding: options.stringArrayEncoding as ['base64'],
         transformObjectKeys: options.transformObjectKeys,
         unicodeEscapeSequence: options.unicodeEscapeSequence,
         target: 'browser'
       });
       
-      setObfuscatedCode(obfuscationResult.getObfuscatedCode());
+      setObfuscatedCode(obfuscationResult?.getObfuscatedCode() || '// Error during obfuscation');
     } catch (error) {
       console.error('Erreur lors de l\'obfuscation:', error);
       setObfuscatedCode('// Erreur lors de l\'obfuscation du code');

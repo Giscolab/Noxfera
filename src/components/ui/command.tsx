@@ -101,7 +101,7 @@ const DebouncedCommandInput = React.forwardRef<
     <CommandInput
       ref={ref}
       value={controlledValue ?? internal}
-      onChange={(e) => setInternal(e.target.value)}
+      onValueChange={setInternal}
       {...props}
     />
   );

@@ -60,7 +60,7 @@ const CheckboxExtended = React.forwardRef<
   
   React.useEffect(() => {
     if (internalRef.current) {
-      internalRef.current.indeterminate = !!indeterminate;
+      (internalRef.current as HTMLInputElement).indeterminate = !!indeterminate;
     }
   }, [indeterminate]);
 

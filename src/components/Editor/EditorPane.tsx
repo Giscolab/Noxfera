@@ -59,19 +59,17 @@ const EditorPane = ({ type }: EditorPaneProps) => {
     const initMonaco = async () => {
       if (!window.monaco) {
         // Load Monaco Editor
-        script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
+        script.current = document.createElement('script');
+        script.current.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
         document.head.appendChild(script.current);
         
         script.current.onload = () => {
-          // @ts-expect-error - window.require is added by Monaco
           window.require.config({ 
             paths: { 
               'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' 
             } 
           });
           
-          // @ts-expect-error - window.require is added by Monaco
           window.require(['vs/editor/editor.main'], () => {
             monacoInstance.current = window.monaco;
             createEditor();
@@ -91,7 +89,7 @@ const EditorPane = ({ type }: EditorPaneProps) => {
         }
 
         // Create new editor
-        editorRef.current = monacoInstance.editor.create(containerRef.current, {
+        editorRef.current = monacoInstance.current?.editor.create(containerRef.current, {
           value: code,
           language: currentLanguage,
           theme: getMonacoTheme(currentTheme),
@@ -143,8 +141,8 @@ const EditorPane = ({ type }: EditorPaneProps) => {
       if (editorRef.current) {
         editorRef.current.dispose();
       }
-      if (script) {
-        document.head.removeChild(script);
+      if (script.current) {
+        document.head.removeChild(script.current);
       }
     };
   }, []);

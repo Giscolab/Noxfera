@@ -28,11 +28,10 @@ const CollapsibleTrigger = React.forwardRef<
     >
       {children}
       {React.isValidElement(IconElement) &&
-        React.cloneElement(IconElement, {
-          "data-collapsible-icon": true,
+        React.cloneElement(IconElement as React.ReactElement<{ className?: string }>, {
           className: cn(
             "h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180",
-            IconElement.props?.className
+            (IconElement as React.ReactElement<{ className?: string }>).props?.className
           )
         })}
     </CollapsiblePrimitive.CollapsibleTrigger>
